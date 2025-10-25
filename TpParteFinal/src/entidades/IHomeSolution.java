@@ -20,6 +20,13 @@ import java.util.List;
  * tareasDeUnProyecto
  * consultarProyecto
  */
+
+/**
+ * Modificación 25-10
+ * Se agregaron o cambiaron parametros
+ * costoProyecto
+ * tieneRetrasos
+ */
 public interface IHomeSolution {
 
     // ============================================================
@@ -120,7 +127,7 @@ public interface IHomeSolution {
      * @param fin Fecha de inicio de finalización (formato YYYY-MM-DD).
      * @throws IllegalArgumentException si la fecha es incorrecta( anterior a la fecha de inicio)
      */
-    public void finalizarProyecto(Integer numero) throws IllegalArgumentException;
+    public void finalizarProyecto(Integer numero, String fin) throws IllegalArgumentException;
 
 
     // ============================================================
@@ -151,10 +158,11 @@ public interface IHomeSolution {
     // ============================================================
 
     /**
-     * Calcula el costo total del proyecto (activo, pendiente o finalizado).
+     *  Calcula el costo total del proyecto (activo, pendiente o finalizado).
+     * @param numero Numero o código del proyecto
      * @return Costo total acumulado.
      */
-    public double costoProyecto(Integer numeroProyecto) ;
+    public double costoProyecto(Integer numero) ;
 
     /**
      * Devuelve una lista de proyectos finalizados (número y domicilio).
@@ -231,7 +239,7 @@ public interface IHomeSolution {
      * @param legajo Legajo del empleado.
      * @return true si tiene retrasos, false en caso contrario.
      */
-    public boolean tieneRestrasos(String legajo) ;
+    public boolean tieneRestrasos(Integer legajo) ;
 
     /**
      * Devuelve la lista de todos los empleados registrados.

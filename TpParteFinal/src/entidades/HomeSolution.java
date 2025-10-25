@@ -15,12 +15,18 @@ public class HomeSolution implements IHomeSolution {
 	@Override
 	public void registrarEmpleado(String nombre, double valor) throws IllegalArgumentException {
 		
+		if(nombre.equals(null) || nombre.equals("") || valor < 0)
+			throw new IllegalArgumentException("Los argumentos ingresados no son validos");
+		
 		Empleado e = new Contratado(nombre, valor);
 		empleados.put(e.retornarLegajo(), e);
 	}
 
 	@Override
 	public void registrarEmpleado(String nombre, double valor, String categoria) throws IllegalArgumentException {
+		
+		if(nombre.equals(null)|| nombre.equals("") || valor < 0 || !TipoContrato.contains(categoria))
+			throw new IllegalArgumentException("Los argumentos ingresados no son validos");
 		
 		Empleado e = new Permanente(nombre, valor, categoria);
 		empleados.put(e.retornarLegajo(), e);		
@@ -89,7 +95,7 @@ public class HomeSolution implements IHomeSolution {
 	
 
 	@Override
-	public void finalizarProyecto(Integer numero) throws IllegalArgumentException {
+	public void finalizarProyecto(Integer numero, String fin) throws IllegalArgumentException {
 		Proyecto proyecto = proyectos.get(numero);
 
 		   if (proyecto == null) {
@@ -183,7 +189,7 @@ public class HomeSolution implements IHomeSolution {
 	}
 
 	@Override
-	public boolean tieneRestrasos(String legajo) {
+	public boolean tieneRestrasos(Integer legajo) {
 		
 		return false;
 	}
