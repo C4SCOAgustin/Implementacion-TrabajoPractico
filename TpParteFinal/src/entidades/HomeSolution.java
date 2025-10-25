@@ -71,13 +71,32 @@ public class HomeSolution implements IHomeSolution {
 
 	@Override
 	public void finalizarTarea(Integer numero, String titulo) throws Exception {
-		
+		Proyecto proyecto = proyectos.get(numero);
+
+	    if (proyecto == null) {
+	        throw new IllegalArgumentException("No existe el proyecto con número: " + numero);
+	    }
+
+	    proyecto.finalizarTarea(titulo); 
 	}
 
-	@Override
-	public void finalizarProyecto(Integer numero, String fin) throws IllegalArgumentException {
 		
+		
+		
+	
+
+	@Override
+	public void finalizarProyecto(Integer numero) throws IllegalArgumentException {
+		Proyecto proyecto = proyectos.get(numero);
+
+		   if (proyecto == null) {
+		       throw new IllegalArgumentException("No existe el proyecto con número: " + numero);
+		   }
+
+		   proyecto.finalizarProyecto();
+			
 	}
+
 
 	@Override
 	public void reasignarEmpleadoEnProyecto(Integer numero, Integer legajo, String titulo) throws Exception {
@@ -90,10 +109,15 @@ public class HomeSolution implements IHomeSolution {
 	}
 
 	@Override
-	public double costoProyecto() {
-		
-		return 0;
+	public double costoProyecto(Integer numeroProyecto) {
+		Proyecto proyecto = proyectos.get(numeroProyecto);
+        return proyecto.calcularCostoProyecto(); // O(1)
 	}
+		
+		
+		
+		
+	
 
 	@Override
 	public List<Tupla<Integer, String>> proyectosFinalizados() {

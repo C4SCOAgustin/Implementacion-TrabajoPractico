@@ -62,15 +62,45 @@ public class Proyecto {
 	}
 	
 	public void finalizarTarea(String tituloTarea) {
-		
+		Tarea tarea = tareas.get(tituloTarea); 
+
+	    if (tarea == null) {
+	        throw new IllegalArgumentException("No existe la tarea con título: " + tituloTarea);
+	    }
+
+	    boolean exito = tarea.finalizarTarea(); 
+
+	    if (!exito) {
+	        System.out.println("La tarea '" + tituloTarea + "' ya estaba finalizada.");
+	    } else {
+	        System.out.println("Tarea '" + tituloTarea + "' finalizada correctamente.");
+	    }
+
+	    
 	}
+		
+	
 	
 	public void finalizarProyecto() {
-		
-	}
+		boolean todasFinalizadas = tareas.values().stream().allMatch(Tarea::retornarEstadoTarea);
+
+		    if (!todasFinalizadas) {
+		        System.out.println("No se puede finalizar el proyecto. Todavía hay tareas pendientes.");
+		        return; 
+		    }
+
+		    
+		    finalizado = true;
+		    fechaRealDeFin = new Date(); 
+		    costoFinal = calcularCostoProyecto(); 
+
+		    System.out.println("Proyecto #" + numeroProyecto + " finalizado correctamente.");
+			
+		}
+
 	
 	public double calcularCostoProyecto() {
-		
+		 return costoFinal;
 	}
 	
 	public boolean estaFinalizado() {

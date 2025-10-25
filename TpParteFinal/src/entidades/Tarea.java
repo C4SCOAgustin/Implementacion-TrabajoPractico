@@ -46,7 +46,11 @@ public class Tarea {
 	
 	//Finaliza la tarea y devuelve verdadero si pudo hacerlo o falso si ya estaba finalizada (boolean)
 	public boolean finalizarTarea() {
-		
+		if (estaFinalizada) {
+		        return false;
+		    }
+		    estaFinalizada = true; 
+		    return true; 
 	}
 	
 	//Retorna el título de la tarea como una cadena(String).
@@ -56,17 +60,17 @@ public class Tarea {
 	
 	//Retorna el número de legajo del empleado responsable de la tarea (int).
 	public int retornarEmpleadoResponsable() { //Devuelve empleadoResponsable de Tarea.
-	
+		return empleadoResponsable;
 	}
 	
 	//Retorna los días necesarios para la finalización de la tarea como un decimal (double).
 	public double retornarDiasNecesarios() { //Devuelve diasNecesarios de Tarea.
-		
+		return diasNecesarios;
 	}
 	
 	//Retorna los días de retraso de la tarea como un decimal (double).
 	public double retornarDiasRetraso() { //Devuelve diasRetraso de Tarea.
-		
+		return diasRetraso;
 	}
 	
 	//Retorna el estado de la tarea en verdadero si está terminada o falso si no lo está (boolean).

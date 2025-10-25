@@ -120,7 +120,7 @@ public interface IHomeSolution {
      * @param fin Fecha de inicio de finalización (formato YYYY-MM-DD).
      * @throws IllegalArgumentException si la fecha es incorrecta( anterior a la fecha de inicio)
      */
-    public void finalizarProyecto(Integer numero, String fin) throws IllegalArgumentException;
+    public void finalizarProyecto(Integer numero) throws IllegalArgumentException;
 
 
     // ============================================================
@@ -154,7 +154,7 @@ public interface IHomeSolution {
      * Calcula el costo total del proyecto (activo, pendiente o finalizado).
      * @return Costo total acumulado.
      */
-    public double costoProyecto() ;
+    public double costoProyecto(Integer numeroProyecto) ;
 
     /**
      * Devuelve una lista de proyectos finalizados (número y domicilio).
