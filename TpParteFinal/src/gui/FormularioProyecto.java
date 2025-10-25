@@ -1,6 +1,6 @@
 package gui;
 
-import entidades.HomeSolution;
+import entidades.IHomeSolution;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

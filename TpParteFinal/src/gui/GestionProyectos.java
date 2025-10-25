@@ -1,6 +1,6 @@
 package gui;
 
-import entidades.HomeSolution;
+import entidades.IHomeSolution;
 import entidades.Tupla;
 
 import javax.swing.*;

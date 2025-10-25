@@ -1,6 +1,6 @@
 package gui;
 
-import entidades.HomeSolution;
+import entidades.IHomeSolution;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +8,7 @@ import java.awt.*;
 public class PanelManager {
 
     private JFrame jFrame;
-    private HomeSolution homeSolution;
+    private IHomeSolution homeSolution;
     private Integer seleccionado;
     private PanelPrincipal principal;
     private FormularioProyecto formularioProyecto;
@@ -18,7 +18,7 @@ public class PanelManager {
     private GestionProyectos gestionProyectos;
     private GestionEmpleados gestionEmpleados;
 
-    public PanelManager(HomeSolution h)
+    public PanelManager(IHomeSolution h)
     {   jFrame=new JFrame();
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         principal=new PanelPrincipal(this);
@@ -36,7 +36,7 @@ public class PanelManager {
         jFrame.pack();
     }
 
-    public HomeSolution sistema() {
+    public IHomeSolution sistema() {
         return homeSolution;
     }
 

@@ -1,7 +1,7 @@
 package gui;
 
 import entidades.Estado;
-import entidades.HomeSolution;
+import entidades.IHomeSolution;
 import entidades.Proyecto;
 import entidades.Tupla;
 
