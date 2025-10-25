@@ -25,7 +25,7 @@ public class HomeSolution implements IHomeSolution {
 	@Override
 	public void registrarEmpleado(String nombre, double valor, String categoria) throws IllegalArgumentException {
 		
-		if(nombre.equals(null)|| nombre.equals("") || valor < 0 || !TipoContrato.contains(categoria))
+		if(nombre.equals(null)|| nombre.equals("") || valor < 0 || !Categoria.contains(categoria))
 			throw new IllegalArgumentException("Los argumentos ingresados no son validos");
 		
 		Empleado e = new Permanente(nombre, valor, categoria);

@@ -37,8 +37,8 @@ public class Proyecto {
 		cliente = new Cliente(datosCliente[0], datosCliente[1], datosCliente[2]);
 		
 		//CAMBIAR-NO SIRVE-DEPRECATED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		this.fechaInicio = new Date(fechaInicio);
-		this.fechaEstimadaFin = new Date(fechaEstimadaFin);
+		//this.fechaInicio = new Date(fechaInicio);
+		//this.fechaEstimadaFin = new Date(fechaEstimadaFin);
 		
 		ultimoNumeroProyecto ++;
 		numeroProyecto = ultimoNumeroProyecto;
