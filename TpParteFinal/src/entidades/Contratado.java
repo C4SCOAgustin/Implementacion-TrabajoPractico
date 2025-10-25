@@ -4,9 +4,7 @@ public class Contratado extends Empleado {
 
 	//DATOS-ATRIBUTOS
 	
-	
 	//INVARIANTE DE REPRESENTACIÓN
-	
 	
 	//MÉTODOS-OPERACIONES
 	

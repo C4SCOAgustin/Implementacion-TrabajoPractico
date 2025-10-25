@@ -5,8 +5,6 @@ public class Permanente extends Empleado {
 	//DATOS-ATRIBUTOS
 	private String categoria;
 	
-	
-	
 	//INVARIANTE DE REPRESENTACIÓN
 	
 	//categoria no puede ser null ni vacio y debe pertenecer a "inicial", "tecnico" o "experto".

@@ -52,6 +52,8 @@ public class HomeSolution implements IHomeSolution {
 		
 		int numLegajo = obtenerMenosRetrasos(); //SI DEVUELVE - 1 DEBERIA DAR UN ERROR
 		
+		if(numLegajo < 0) throw new IllegalArgumentException("No hay empleados disponibles");
+		
 		proyectos.get(numero).asignarEmpleadoATarea(titulo, numLegajo);
 	}
 
@@ -67,6 +69,7 @@ public class HomeSolution implements IHomeSolution {
 	public void agregarTareaEnProyecto(Integer numero, String titulo, String descripcion, double dias)
 			throws IllegalArgumentException {
 		
+		proyectos.get(numero).registrarTarea(titulo, descripcion, dias);
 	}
 
 	@Override

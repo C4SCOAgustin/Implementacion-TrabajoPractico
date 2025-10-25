@@ -29,8 +29,7 @@ public class Proyecto {
 		
 		for(int i = 0; i < titulos.length; i++) {
 			
-			Tarea t = new Tarea(titulos[i], descripciones[i], dias[i]);
-			tareas.put(t.retornarTitulo(), t);
+			registrarTarea(titulos[i], descripciones[i], dias[i]);
 		}
 	
 		this.domicilio = domicilio;
@@ -58,7 +57,7 @@ public class Proyecto {
 	
 	public void registrarTarea(String tituloTarea, String descripcionTarea,
 			double diasNecesariosTarea) {
-		
+	
 	}
 	
 	public void finalizarTarea(String tituloTarea) {
