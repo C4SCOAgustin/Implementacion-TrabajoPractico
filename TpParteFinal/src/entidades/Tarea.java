@@ -38,7 +38,7 @@ public class Tarea {
 		this.empleadoResponsable = nLegajo;
 	}
 	
-	//Añade días de retraso a la tarea y el empleadoResponsable (int).
+	//Añade días de retraso a la tarea y retorna al empleadoResponsable (int).
 	public int registrarRetraso(double añadirRetraso) {
 		
 		return empleadoResponsable;
@@ -46,6 +46,7 @@ public class Tarea {
 	
 	//Finaliza la tarea y devuelve verdadero si pudo hacerlo o falso si ya estaba finalizada (boolean)
 	public boolean finalizarTarea() {
+		
 		if (estaFinalizada) {
 		        return false;
 		    }
@@ -53,32 +54,33 @@ public class Tarea {
 		    return true; 
 	}
 	
-	
-
-	
-	
 	//Retorna el título de la tarea como una cadena(String).
 	public String retornarTitulo() {
 		
+		return titulo;
 	}
 	
 	//Retorna el número de legajo del empleado responsable de la tarea (int).
-	public int retornarEmpleadoResponsable() { //Devuelve empleadoResponsable de Tarea.
+	public int retornarEmpleadoResponsable() {
+		
 		return empleadoResponsable;
 	}
 	
 	//Retorna los días necesarios para la finalización de la tarea como un decimal (double).
-	public double retornarDiasNecesarios() { //Devuelve diasNecesarios de Tarea.
+	public double retornarDiasNecesarios() {
+
 		return diasNecesarios;
 	}
 	
 	//Retorna los días de retraso de la tarea como un decimal (double).
-	public double retornarDiasRetraso() { //Devuelve diasRetraso de Tarea.
+	public double retornarDiasRetraso() {
+
 		return diasRetraso;
 	}
 	
 	//Retorna el estado de la tarea en verdadero si está terminada o falso si no lo está (boolean).
 	public boolean retornarEstadoTarea() {
 		
+		return estaFinalizada;
 	}
 }

@@ -9,7 +9,7 @@ public class Proyecto {
 	
 	//DATOS-ATRIBUTOS
 
-	private HashMap<String, Tarea> tareas;
+	private HashMap<String, Tarea> tareas = new HashMap<>();
 	private String domicilio;
 	private Cliente cliente;
 	private Date fechaInicio;
@@ -24,7 +24,16 @@ public class Proyecto {
 	
 	//CONSTRUCTOR
 	public Proyecto(String[] titulos, String[] descripciones, double[] dias, String domicilio,
-			String[] datosCliente, String fechaInicio, String fechaEstimadaFin) {
+			String[] datosCliente, String fechaInicio, String fechaEstimadaFin) throws IllegalArgumentException {
+		
+		if(datosCliente[0] == null || datosCliente[0].equals(""))
+			throw new IllegalArgumentException("El nombre de cliente ingresado es invalido.");
+		
+		if(datosCliente[1] == null || datosCliente[1].equals(""))
+			throw new IllegalArgumentException("El email de cliente ingresado es invalido.");
+		
+		if(datosCliente[2] == null || datosCliente[2].equals(""))
+			throw new IllegalArgumentException("El teléfono de cliente ingresado es invalido.");
 		
 		for(int i = 0; i < titulos.length; i++) {
 			
@@ -58,7 +67,18 @@ public class Proyecto {
 	
 	public void registrarTarea(String tituloTarea, String descripcionTarea,
 			double diasNecesariosTarea) {
-	
+		
+		if(tituloTarea == null || tituloTarea.equals(""))
+			throw new IllegalArgumentException("El título ingresado es invalido.");
+		
+		if(descripcionTarea == null || descripcionTarea.equals(""))
+			throw new IllegalArgumentException("La descripción ingresada es invalida.");
+		
+		if(diasNecesariosTarea <= 0)
+			throw new IllegalArgumentException("Los días necesarios deben ser mayores a 0.");
+		
+		Tarea t = new Tarea(tituloTarea, descripcionTarea, diasNecesariosTarea);
+		tareas.put(t.retornarTitulo(), t);
 	}
 	
 	public void finalizarTarea(String tituloTarea) {
@@ -126,14 +146,17 @@ public class Proyecto {
 		}
 
 	 public boolean estaFinalizado() {
+		 
 		    return finalizado;
 		}
 
 		public String retornarDomicilio() {
+			
 		    return domicilio;
 		}
 	
 	public Set<Tarea> listarTareasPendientes() {
+		
         Set<Tarea> pendientes = new HashSet<>();
 		    for (Tarea t : tareas.values()) {
 		        if (!t.retornarEstadoTarea()) {
@@ -142,7 +165,6 @@ public class Proyecto {
 		    }
 		    return pendientes;
 		}
-	}
 	
 	public int retornarNumeroProyecto() {
 		
