@@ -2,6 +2,7 @@ package entidades;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 public class Proyecto {
@@ -124,12 +125,23 @@ public class Proyecto {
 		    return tareas.get(titulo);
 		}
 
-	public boolean estaFinalizado() {
-		
-	}
+	 public boolean estaFinalizado() {
+		    return finalizado;
+		}
+
+		public String retornarDomicilio() {
+		    return domicilio;
+		}
 	
 	public Set<Tarea> listarTareasPendientes() {
-		
+        Set<Tarea> pendientes = new HashSet<>();
+		    for (Tarea t : tareas.values()) {
+		        if (!t.retornarEstadoTarea()) {
+		            pendientes.add(t);
+		        }
+		    }
+		    return pendientes;
+		}
 	}
 	
 	public int retornarNumeroProyecto() {

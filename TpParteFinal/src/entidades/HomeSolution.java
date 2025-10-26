@@ -1,5 +1,6 @@
 package entidades;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -268,14 +269,31 @@ public class HomeSolution implements IHomeSolution {
 		
 	@Override
 	public List<Tupla<Integer, String>> proyectosFinalizados() {
+        List<Tupla<Integer, String>> lista = new ArrayList<>();
+            for (Proyecto proyecto : proyectos.values()) {
+		        if (proyecto.estaFinalizado()) {
+		            lista.add(new Tupla<>(proyecto.retornarNumeroProyecto(), proyecto.retornarDomicilio()));
+		        }
+		    }
+
+		    return lista;
 		
-		return null;
+		
 	}
 
 	@Override
 	public List<Tupla<Integer, String>> proyectosPendientes() {
+		List<Tupla<Integer, String>> pendientes = new ArrayList<>();
+
+	    for (Proyecto p : proyectos.values()) {
+	        
+	        if (!p.estaFinalizado() && !p.listarTareasPendientes().isEmpty()) {
+	            pendientes.add(new Tupla<>(p.retornarNumeroProyecto(), p.retornarDomicilio()));
+	        }
+	    }
+
+	    return pendientes;
 		
-		return null;
 	}
 
 	@Override
