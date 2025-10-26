@@ -78,8 +78,6 @@ public class Proyecto {
 	    
 	}
 		
-	
-	
 	public void finalizarProyecto() {
 		boolean todasFinalizadas = tareas.values().stream().allMatch(Tarea::retornarEstadoTarea);
 
@@ -102,6 +100,29 @@ public class Proyecto {
 		 return costoFinal;
 	}
 	
+	public HashMap<String, Tarea> getTareas() {
+	    return tareas;
+	}
+	
+	public void incrementarCosto(double monto) {
+        this.costoFinal += monto;
+    }
+	
+	 public void reducirCosto(double monto) {
+	        if (monto < 0) {
+	            throw new IllegalArgumentException("El monto a reducir no puede ser negativo.");
+	        }
+
+	        costoFinal -= monto;
+	        if (costoFinal < 0) {
+	            costoFinal = 0; 
+	        }
+	    }
+	 
+	 public Tarea obtenerTareaPorTitulo(String titulo) {
+		    return tareas.get(titulo);
+		}
+
 	public boolean estaFinalizado() {
 		
 	}

@@ -110,12 +110,99 @@ public class HomeSolution implements IHomeSolution {
 	@Override
 	public void reasignarEmpleadoEnProyecto(Integer numero, Integer legajo, String titulo) throws Exception {
 		
-	}
+	    Proyecto proyecto = proyectos.get(numero);
+	    if (proyecto == null) {
+	        throw new IllegalArgumentException("No existe el proyecto con número: " + numero);
+	    }
+
+	    
+	    Tarea tarea = proyecto.getTareas().get(titulo);
+	    if (tarea == null) {
+	        throw new IllegalArgumentException("No existe la tarea con título: " + titulo);
+	    }
+
+	    
+	    int legajoAnterior = tarea.retornarEmpleadoResponsable();
+	    if (legajoAnterior == 0) { 
+	        throw new Exception("La tarea no tiene empleado asignado previamente.");
+	    }
+
+	    
+	    Empleado empleadoNuevo = empleados.get(legajo);
+	    if (empleadoNuevo == null) {
+	        throw new IllegalArgumentException("El empleado reemplazante no existe: " + legajo);
+	    }
+
+	   
+	    tarea.asignarEmpleado(legajo);
+
+	    
+	    Empleado empleadoAnterior = empleados.get(legajoAnterior);
+	    if (empleadoAnterior != null) empleadoAnterior.desocuparEmpleado();
+	    empleadoNuevo.ocuparEmpleado();
+
+	    
+	    double diasTotales = tarea.retornarDiasNecesarios() + tarea.retornarDiasRetraso();
+	    if (empleadoAnterior != null) proyecto.reducirCosto(diasTotales * empleadoAnterior.retornarValor());
+	    proyecto.incrementarCosto(diasTotales * empleadoNuevo.retornarValor());
+
+	    System.out.println("Empleado reasignado correctamente en la tarea '" + titulo + "'");
+    }
 
 	@Override
 	public void reasignarEmpleadoConMenosRetraso(Integer numero, String titulo) throws Exception {
+		 Proyecto proyecto = proyectos.get(numero);
+		    if (proyecto == null) {
+		        throw new IllegalArgumentException("No existe el proyecto con número: " + numero);
+		    }
+
+		    
+		    Tarea tarea = proyecto.obtenerTareaPorTitulo(titulo);
+		    if (tarea == null) {
+		        throw new IllegalArgumentException("No existe la tarea con título: " + titulo);
+		    }
+
+		    
+		    int legajoActual = tarea.retornarEmpleadoResponsable();
+		    if (legajoActual == 0) { 
+		        throw new Exception("La tarea no tiene un empleado asignado actualmente.");
+		    }
+
+		    Empleado empleadoActual = empleados.get(legajoActual);
+		    if (empleadoActual == null) {
+		        throw new Exception("El empleado actual asignado a la tarea no existe en el sistema.");
+		    }
+
+		    
+		    Empleado mejorEmpleado = null;
+		    for (Empleado e : empleados.values()) {
+		        if (!e.retornarDisponibilidad()) continue; 
+		        if (mejorEmpleado == null || e.retornarRetrasos() < mejorEmpleado.retornarRetrasos()) {
+		            mejorEmpleado = e;
+		        }
+		    }
+
+		    if (mejorEmpleado == null) {
+		        throw new Exception("No hay empleados disponibles para reasignar.");
+		    }
+
+		    
+		    empleadoActual.desocuparEmpleado();
+
+		    
+		    tarea.asignarEmpleado(mejorEmpleado.retornarLegajo());
+		    mejorEmpleado.ocuparEmpleado();
+
+		    
+		    proyecto.reducirCosto(empleadoActual.retornarValor());
+		    proyecto.incrementarCosto(mejorEmpleado.retornarValor());
+
+		    System.out.println("Empleado '" + empleadoActual.retornarNombre() + 
+		                       "' fue reemplazado por '" + mejorEmpleado.retornarNombre() +
+		                       "' en la tarea '" + titulo + "'.");
+		}
 		
-	}
+	
 
 	@Override
 	public double costoProyecto(Integer numeroProyecto) {
@@ -124,10 +211,6 @@ public class HomeSolution implements IHomeSolution {
 	}
 		
 		
-		
-		
-	
-
 	@Override
 	public List<Tupla<Integer, String>> proyectosFinalizados() {
 		
