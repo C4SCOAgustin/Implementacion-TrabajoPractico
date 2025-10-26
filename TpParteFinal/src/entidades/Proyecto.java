@@ -6,9 +6,8 @@ import java.util.Set;
 
 public class Proyecto {
 	
-
 	//DATOS-ATRIBUTOS
-	
+
 	private HashMap<String, Tarea> tareas;
 	private String domicilio;
 	private Cliente cliente;
@@ -19,7 +18,6 @@ public class Proyecto {
 	private Date fechaRealDeFin;
 	private double costoFinal;
 	private boolean finalizado;
-
 
 	//MÉTODOS-OPERACIONES
 	
@@ -41,13 +39,15 @@ public class Proyecto {
 		//this.fechaEstimadaFin = new Date(fechaEstimadaFin);
 		
 		ultimoNumeroProyecto ++;
-		numeroProyecto = ultimoNumeroProyecto;
-		
+		numeroProyecto = ultimoNumeroProyecto;		
 	}
 	
-	public void asignarEmpleadoATarea(String tituloTarea, int nLegajo) {
+	public void asignarEmpleadoATarea(String tituloTarea, int nLegajo) throws Exception {
 		
-		tareas.get(tituloTarea).asignarEmpleado(nLegajo);	
+		if(!tareas.containsKey(tituloTarea) || tareas.get(tituloTarea).retornarEmpleadoResponsable() != 0)
+			throw new Exception("La tarea no existe o ya tiene un empleado asignado");
+		
+		tareas.get(tituloTarea).asignarEmpleado(nLegajo);		
 	}
 	
 	public int registrarRetrasoTarea(String tituloTarea, double diasRetraso) {
@@ -70,12 +70,14 @@ public class Proyecto {
 	    boolean exito = tarea.finalizarTarea(); 
 
 	    if (!exito) {
+	    	
 	        System.out.println("La tarea '" + tituloTarea + "' ya estaba finalizada.");
-	    } else {
+	    }
+	    
+	    else {
+	    	
 	        System.out.println("Tarea '" + tituloTarea + "' finalizada correctamente.");
 	    }
-
-	    
 	}
 		
 	public void finalizarProyecto() {
@@ -85,7 +87,6 @@ public class Proyecto {
 		        System.out.println("No se puede finalizar el proyecto. Todavía hay tareas pendientes.");
 		        return; 
 		    }
-
 		    
 		    finalizado = true;
 		    fechaRealDeFin = new Date(); 
@@ -95,7 +96,6 @@ public class Proyecto {
 			
 		}
 
-	
 	public double calcularCostoProyecto() {
 		 return costoFinal;
 	}
@@ -114,6 +114,7 @@ public class Proyecto {
 	        }
 
 	        costoFinal -= monto;
+	        
 	        if (costoFinal < 0) {
 	            costoFinal = 0; 
 	        }

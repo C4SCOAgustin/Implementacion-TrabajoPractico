@@ -15,8 +15,11 @@ public class HomeSolution implements IHomeSolution {
 	@Override
 	public void registrarEmpleado(String nombre, double valor) throws IllegalArgumentException {
 		
-		if(nombre.equals(null) || nombre.equals("") || valor < 0)
-			throw new IllegalArgumentException("Los argumentos ingresados no son validos");
+		if(nombre.equals(null) || nombre.equals(""))
+			throw new IllegalArgumentException("El nombre ingresado es invalido.");
+		
+		if(valor < 0)
+			throw new IllegalArgumentException("El valor ingresado es invalido.");
 		
 		Empleado e = new Contratado(nombre, valor);
 		empleados.put(e.retornarLegajo(), e);
@@ -25,8 +28,14 @@ public class HomeSolution implements IHomeSolution {
 	@Override
 	public void registrarEmpleado(String nombre, double valor, String categoria) throws IllegalArgumentException {
 		
-		if(nombre.equals(null)|| nombre.equals("") || valor < 0 || !Categoria.contains(categoria))
-			throw new IllegalArgumentException("Los argumentos ingresados no son validos");
+		if(nombre.equals(null)|| nombre.equals(""))
+			throw new IllegalArgumentException("El nombre ingresado es invalido.");
+		
+		if(valor < 0)
+			throw new IllegalArgumentException("El valor ingresado es invalidos.");
+		
+		if(!Categoria.contains(categoria))
+			throw new IllegalArgumentException("La categoria ingresada es invalida.");
 		
 		Empleado e = new Permanente(nombre, valor, categoria);
 		empleados.put(e.retornarLegajo(), e);		
@@ -35,20 +44,44 @@ public class HomeSolution implements IHomeSolution {
 	@Override
 	public void registrarProyecto(String[] titulos, String[] descripciones, double[] dias, String domicilio,
 			String[] datosCliente, String fechaInicio, String fechaEstimadaFin) throws IllegalArgumentException {
+				
+		if(titulos.length <= 0)
+			throw new IllegalArgumentException("Los títulos ingresados son invalidos.");
 		
+		if(descripciones.length <= 0)
+			throw new IllegalArgumentException("Las descripciones ingresadas son invalidas.");
+		
+		if(dias.length <= 0)
+			throw new IllegalArgumentException("Los días ingresados son invalidos.");
+		
+		
+		if(domicilio.equals(null) ||domicilio.equals(""))
+			throw new IllegalArgumentException("El domicilio ingresado es invalido.");
+		
+		if(datosCliente.length != 3)
+			throw new IllegalArgumentException("Los datos del cliente ingresados son invalidos; Debe ingresar el nombre, email y telefono.");
+		
+		if(fechaInicio.equals(null) || fechaInicio.equals(""))
+			throw new IllegalArgumentException("La fecha de inicio ingresada es invalida.");
+		
+		if(fechaEstimadaFin.equals(null) || fechaEstimadaFin.equals(""))
+			throw new IllegalArgumentException("La fecha estimada de fin ingresada es invalida.");
+				
 		Proyecto p = new Proyecto(titulos, descripciones, dias, domicilio, datosCliente, fechaInicio, fechaEstimadaFin);
-		proyectos.put(p.retornarNumeroProyecto(), p);
-			
+		proyectos.put(p.retornarNumeroProyecto(), p);		
 	}
 
 	@Override
 	public void asignarResponsableEnTarea(Integer numero, String titulo) throws Exception {
 				
-		for(int key:empleados.keySet()) {
+		if(!proyectos.containsKey(numero) || proyectos.get(numero).estaFinalizado())
+			throw new Exception("El proyecto no existe o esta finalizado.");
+		
+		for(int e:empleados.keySet()) {
 			
-			if(empleados.get(key).retornarDisponibilidad()) {
+			if(empleados.get(e).retornarDisponibilidad()) {
 				
-				proyectos.get(numero).asignarEmpleadoATarea(titulo, key);
+				proyectos.get(numero).asignarEmpleadoATarea(titulo, e);
 			}
 		}
 	}
@@ -56,9 +89,13 @@ public class HomeSolution implements IHomeSolution {
 	@Override
 	public void asignarResponsableMenosRetraso(Integer numero, String titulo) throws Exception {
 		
+		if(!proyectos.containsKey(numero) || proyectos.get(numero).estaFinalizado())
+			throw new Exception("El proyecto no existe o esta finalizado.");
+		
 		int numLegajo = obtenerMenosRetrasos(); //SI DEVUELVE - 1 DEBERIA DAR UN ERROR
 		
-		if(numLegajo < 0) throw new IllegalArgumentException("No hay empleados disponibles");
+		if(numLegajo < 0)
+			throw new Exception("No hay empleados disponibles.");
 		
 		proyectos.get(numero).asignarEmpleadoATarea(titulo, numLegajo);
 	}
@@ -67,6 +104,12 @@ public class HomeSolution implements IHomeSolution {
 	public void registrarRetrasoEnTarea(Integer numero, String titulo, double cantidadDias)
 			throws IllegalArgumentException {
 		
+		if(!proyectos.containsKey(numero))
+			throw new IllegalArgumentException("El proyecto no existe.");
+		
+		if(cantidadDias <= 0)
+			throw new IllegalArgumentException("Los días ingresados deben ser mayores a 0.");
+		
 		int empleadoResponsable = proyectos.get(numero).registrarRetrasoTarea(titulo, cantidadDias);
 		empleados.get(empleadoResponsable).añadirRetraso();
 	}
@@ -74,6 +117,18 @@ public class HomeSolution implements IHomeSolution {
 	@Override
 	public void agregarTareaEnProyecto(Integer numero, String titulo, String descripcion, double dias)
 			throws IllegalArgumentException {
+		
+		if(!proyectos.containsKey(numero))
+			throw new IllegalArgumentException("El proyecto no existe.");
+		
+		if(titulo.equals(null) || titulo.equals(""))
+			throw new IllegalArgumentException("El título ingresado es invalido.");
+		
+		if(descripcion.equals(null) || descripcion.equals(""))
+			throw new IllegalArgumentException("La descripción ingresada es invalida.");
+		
+		if(dias <= 0)
+			throw new IllegalArgumentException("Los días ingresados deben ser mayores a 0.");
 		
 		proyectos.get(numero).registrarTarea(titulo, descripcion, dias);
 	}
