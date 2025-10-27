@@ -339,7 +339,7 @@ public class HomeSolution implements IHomeSolution {
 	}
 
 	@Override
-	public Object[] tareasDeUnProyecto(Integer numero) {	
+	public Object[] tareasDeUnProyecto(Integer numero) {
 		return proyectos.get(numero).retornarTareas().values().toArray(new Tarea[0]);
 	}
 

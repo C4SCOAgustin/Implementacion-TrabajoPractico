@@ -171,12 +171,12 @@ public class Proyecto {
 	}
 	
 	public List<Tupla<Integer, String>> retornarEmpleados() {
-		List<Tupla<Integer, String>> empleados = new ArrayList<>();
+		Set<Tupla<Integer, String>> empleados = new HashSet<>();
 		
 		for (Tarea t : tareas.values()) {
 			empleados.add(new Tupla<>(t.retornarEmpleadoResponsable(), domicilio));
 		}
 		
-		return empleados;
+		return new ArrayList<>(empleados);
 	}
 }
