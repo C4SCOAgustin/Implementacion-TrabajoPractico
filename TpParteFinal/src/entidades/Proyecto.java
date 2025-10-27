@@ -46,9 +46,12 @@ public class Proyecto {
 		numeroProyecto = ultimoNumeroProyecto;		
 	}
 	
-	public void asignarEmpleadoATarea(String tituloTarea, int nLegajo) throws Exception {	
-		if (!tareas.containsKey(tituloTarea) || tareas.get(tituloTarea).retornarEmpleadoResponsable() != 0) {
-			throw new Exception("La tarea no existe o ya tiene un empleado asignado");
+	public void asignarEmpleadoATarea(String tituloTarea, int nLegajo) throws Exception {
+		if (!tareas.containsKey(tituloTarea)) {
+			throw new Exception("La tarea no existe");
+		}
+		if (tareas.get(tituloTarea).retornarEmpleadoResponsable() != 0) {
+			throw new Exception("La tarea ya tiene un empleado asignado");
 		}
 		
 		tareas.get(tituloTarea).asignarEmpleado(nLegajo);		
@@ -174,7 +177,9 @@ public class Proyecto {
 		Set<Tupla<Integer, String>> empleados = new HashSet<>();
 		
 		for (Tarea t : tareas.values()) {
-			empleados.add(new Tupla<>(t.retornarEmpleadoResponsable(), domicilio));
+			if (t.retornarEmpleadoResponsable() > 0) {
+				empleados.add(new Tupla<>(t.retornarEmpleadoResponsable(), domicilio));
+			}
 		}
 		
 		return new ArrayList<>(empleados);

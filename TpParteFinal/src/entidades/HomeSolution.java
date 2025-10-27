@@ -90,9 +90,10 @@ public class HomeSolution implements IHomeSolution {
 		}
 		
 		for (Empleado e: empleados.values()) {		
-			if (e.retornarDisponibilidad()) {			
+			if (e.retornarDisponibilidad()) {		
 				proyectos.get(numero).asignarEmpleadoATarea(titulo, e.retornarLegajo());
 				e.ocuparEmpleado();
+				return;
 			}
 		}
 	}
@@ -340,6 +341,7 @@ public class HomeSolution implements IHomeSolution {
 
 	@Override
 	public Object[] tareasDeUnProyecto(Integer numero) {
+		System.out.println("aca: " + proyectos.get(numero).retornarTareas().values().toArray(new Tarea[0])[0].retornarTitulo());
 		return proyectos.get(numero).retornarTareas().values().toArray(new Tarea[0]);
 	}
 

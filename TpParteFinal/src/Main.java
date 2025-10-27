@@ -8,7 +8,7 @@ import entidades.Tarea;
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         HomeSolution homeSolution=new HomeSolution();
 //        String titulos[] = {"Pintar","Instacion electrica","Trabajos jardineria","Instalar AA"};
 //        String descripciones[] = {"", "", "", ""};
@@ -21,19 +21,32 @@ public class Main {
         PanelManager panelManager = new PanelManager(homeSolution);
   
         homeSolution.registrarEmpleado("Juan", 15000);
+        homeSolution.registrarEmpleado("Hernan", 15000);
         String titulos[] = {"Pintar","Instalacion electrica"};
         String descripciones[] = {"pintar de rosa las paredes del cuarto", "Instalar el aire acondiciano de la oficina"};
         double duracion[] = {4,2.5};
         String cliente1[] = {"Pedro Gomez", "pedro@gmail.com", "1139383736"};
-        String cliente2[] = {"Joaquin Fernandez", "Joaco@gmail.com", "1135124736"};
         
         homeSolution.registrarProyecto(titulos, descripciones, duracion, "Domicilio 10", cliente1, "2025-10-27", "2025-11-20" );
         
-//        System.out.println(((Tarea) homeSolution.tareasDeUnProyecto(homeSolution.proyectosPendientes().getFirst().getValor1())[0]).retornarTitulo());
-//        System.out.println(((Tarea) homeSolution.tareasDeUnProyecto(1)[0]).retornarTitulo());
+        //System.out.println(((Tarea) homeSolution.tareasDeUnProyecto(homeSolution.proyectosPendientes().get(0).getValor1())[0]).retornarTitulo());
+        //System.out.println(((Tarea) homeSolution.tareasDeUnProyecto(homeSolution.proyectosPendientes().get(0).getValor1())[0]).retornarEmpleadoResponsable());
+        
+        //System.out.println(((Tarea) homeSolution.tareasDeUnProyecto(homeSolution.proyectosPendientes().get(0).getValor1())[1]).retornarTitulo());
+        //System.out.println(((Tarea) homeSolution.tareasDeUnProyecto(homeSolution.proyectosPendientes().get(0).getValor1())[1]).retornarEmpleadoResponsable());
+        
+        homeSolution.asignarResponsableEnTarea(1, titulos[0]);
+        homeSolution.asignarResponsableEnTarea(1, titulos[1]);
+//        System.out.println(homeSolution.tareasDeUnProyecto(1));
+//        for (Tarea t: (Tarea[]) (homeSolution.tareasDeUnProyecto(1))) {
+//        	System.out.println(t.retornarTitulo());	
+//        }
+        //System.out.println(((Tarea) homeSolution.tareasDeUnProyecto(homeSolution.proyectosPendientes().get(0).getValor1())[0]).retornarEmpleadoResponsable());
+        //System.out.println(((Tarea) homeSolution.tareasDeUnProyecto(homeSolution.proyectosPendientes().get(0).getValor1())[1]).retornarEmpleadoResponsable());
+        //System.out.println(((Tarea) homeSolution.tareasDeUnProyecto(1)[0]).retornarTitulo());
 //        
 //        System.out.println(((Empleado) homeSolution.empleadosNoAsignados()[0]).retornarNombre());
 //        System.out.println( homeSolution.empleadosAsignadosAProyecto(1).getFirst().getValor1());
-        System.out.println( homeSolution.empleadosAsignadosAProyecto(1).get(0).getValor1());        
+//        System.out.println(homeSolution.empleadosAsignadosAProyecto(1).get(0).getValor1());
     }
 }

@@ -47,6 +47,7 @@ public class GestionProyectos extends  JPanel{
         armarPantalla(modelTabla);
         tareas.setModel(new DefaultComboBoxModel(listaTareas));
         tareas.setSelectedIndex(-1);
+        System.out.println();
         volverPrincipal.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
