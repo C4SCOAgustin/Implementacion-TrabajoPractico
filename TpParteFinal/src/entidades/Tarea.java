@@ -61,4 +61,8 @@ public class Tarea {
 	public boolean retornarEstadoTarea() {		
 		return estaFinalizada;
 	}
+	
+	public String toString() {
+		return this.titulo;
+	}
 }

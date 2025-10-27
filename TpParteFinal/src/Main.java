@@ -22,6 +22,10 @@ public class Main {
   
         homeSolution.registrarEmpleado("Juan", 15000);
         homeSolution.registrarEmpleado("Hernan", 15000);
+//        Long x = 1000l;
+//        while (x > 0) {
+//        	System.out.println(homeSolution.empleados().getLast().getValor2());
+//        }
         String titulos[] = {"Pintar","Instalacion electrica"};
         String descripciones[] = {"pintar de rosa las paredes del cuarto", "Instalar el aire acondiciano de la oficina"};
         double duracion[] = {4,2.5};
@@ -35,11 +39,12 @@ public class Main {
         //System.out.println(((Tarea) homeSolution.tareasDeUnProyecto(homeSolution.proyectosPendientes().get(0).getValor1())[1]).retornarTitulo());
         //System.out.println(((Tarea) homeSolution.tareasDeUnProyecto(homeSolution.proyectosPendientes().get(0).getValor1())[1]).retornarEmpleadoResponsable());
         
-        homeSolution.asignarResponsableEnTarea(1, titulos[0]);
-        homeSolution.asignarResponsableEnTarea(1, titulos[1]);
+//        homeSolution.asignarResponsableEnTarea(1, titulos[0]);
+//        homeSolution.asignarResponsableEnTarea(1, titulos[1]);
 //        System.out.println(homeSolution.tareasDeUnProyecto(1));
 //        for (Tarea t: (Tarea[]) (homeSolution.tareasDeUnProyecto(1))) {
-//        	System.out.println(t.retornarTitulo());	
+//        	System.out.println(t.retornarTitulo());
+//        	System.out.println(t);
 //        }
         //System.out.println(((Tarea) homeSolution.tareasDeUnProyecto(homeSolution.proyectosPendientes().get(0).getValor1())[0]).retornarEmpleadoResponsable());
         //System.out.println(((Tarea) homeSolution.tareasDeUnProyecto(homeSolution.proyectosPendientes().get(0).getValor1())[1]).retornarEmpleadoResponsable());

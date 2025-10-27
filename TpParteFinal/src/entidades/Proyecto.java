@@ -173,15 +173,20 @@ public class Proyecto {
 		return false;	
 	}
 	
-	public List<Tupla<Integer, String>> retornarEmpleados() {
-		Set<Tupla<Integer, String>> empleados = new HashSet<>();
+	public Set<Integer> retornarEmpleados() {
+		Set<Integer> empleados = new HashSet<>();
 		
 		for (Tarea t : tareas.values()) {
 			if (t.retornarEmpleadoResponsable() > 0) {
-				empleados.add(new Tupla<>(t.retornarEmpleadoResponsable(), domicilio));
+				empleados.add(t.retornarEmpleadoResponsable());
 			}
 		}
 		
-		return new ArrayList<>(empleados);
+		return empleados;
+	}
+	
+	@Override
+	public String toString() {
+		return "El número de proyecto es: " + numeroProyecto;
 	}
 }

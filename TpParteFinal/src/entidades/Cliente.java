@@ -16,4 +16,9 @@ public class Cliente {
 		this.email = email;
 		this.telefono = telefono;
 	}
+	
+	@Override
+	public String toString() {
+		return nombre + " " + email + " " + telefono;
+	}
 }

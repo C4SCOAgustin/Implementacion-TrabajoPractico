@@ -58,5 +58,10 @@ public abstract class Empleado {
 	//Retorna la cantidad de veces que el empleado se retraso en la entrega de tareas como un número (int).
 	public int retornarRetrasos() {
 		return retrasos;
-	}	
+	}
+	
+	@Override
+	public String toString() {
+		return nombre;
+	}
 }

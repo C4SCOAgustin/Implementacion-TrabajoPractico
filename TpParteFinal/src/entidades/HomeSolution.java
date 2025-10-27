@@ -330,8 +330,14 @@ public class HomeSolution implements IHomeSolution {
 	}
 
 	@Override
-	public List<Tupla<Integer, String>> empleadosAsignadosAProyecto(Integer numero) {	
-		return proyectos.get(numero).retornarEmpleados();
+	public List<Tupla<Integer, String>> empleadosAsignadosAProyecto(Integer numero) {
+		List<Tupla<Integer, String>> empleadosProyecto = new ArrayList<>();
+		
+		for (Integer legajo : proyectos.get(numero).retornarEmpleados()) {
+			empleadosProyecto.add(new Tupla<>(legajo, empleados.get(legajo).retornarNombre()));
+		}
+		
+		return empleadosProyecto;
 	}
 
 	@Override
