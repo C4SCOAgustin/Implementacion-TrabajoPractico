@@ -1,4 +1,5 @@
 import entidades.Contratado;
+import entidades.Empleado;
 import entidades.Permanente;
 import entidades.HomeSolution;
 import gui.PanelManager;
@@ -17,5 +18,5 @@ public class Main {
 //        homeSolution.registrarEmpleado("Luis", 80000, "EXPERTO");
 //        homeSolution.registrarEmpleado("Julieta", 15000);
         PanelManager panelManager = new PanelManager(homeSolution);
-        }
     }
+}

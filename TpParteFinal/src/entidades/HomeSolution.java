@@ -177,7 +177,7 @@ public class HomeSolution implements IHomeSolution {
 	        throw new IllegalArgumentException("No existe el proyecto con número: " + numero);
 	    }
 	    
-	    Tarea tarea = proyecto.getTareas().get(titulo);
+	    Tarea tarea = proyecto.retornarTareas().get(titulo);
 	    
 	    if (tarea == null) {
 	        throw new IllegalArgumentException("No existe la tarea con título: " + titulo);
@@ -306,53 +306,71 @@ public class HomeSolution implements IHomeSolution {
 	}
 
 	@Override
-	public Object[] empleadosNoAsignados() {	
-		return null;
+	public Object[] empleadosNoAsignados() {
+		List<Empleado> empleadosLibres = new ArrayList<>();
+		
+		for (Empleado e : empleados.values()) {
+			if (e.retornarDisponibilidad()) {
+				empleadosLibres.add(e);
+			}
+		}
+		
+		return empleadosLibres.toArray(new Empleado[0]);
 	}
 
 	@Override
 	public boolean estaFinalizado(Integer numero) {		
-		return false;
+		return proyectos.get(numero).estaFinalizado();
 	}
 
 	@Override
 	public int consultarCantidadRetrasosEmpleado(Integer legajo) {		
-		return 0;
+		return empleados.get(legajo).retornarRetrasos();
 	}
 
 	@Override
 	public List<Tupla<Integer, String>> empleadosAsignadosAProyecto(Integer numero) {	
-		return null;
+		return proyectos.get(numero).retornarEmpleados();
 	}
 
 	@Override
 	public Object[] tareasProyectoNoAsignadas(Integer numero) {	
-		return null;
+		return proyectos.get(numero).listarTareasPendientes().toArray(new Tarea[0]);
 	}
 
 	@Override
 	public Object[] tareasDeUnProyecto(Integer numero) {	
-		return null;
+		return proyectos.get(numero).retornarTareas().values().toArray(new Tarea[0]);
 	}
 
 	@Override
 	public String consultarDomicilioProyecto(Integer numero) {		
-		return null;
+		return proyectos.get(numero).retornarDomicilio();
 	}
 
 	@Override
 	public boolean tieneRestrasos(Integer legajo) {		
+		if (empleados.get(legajo).retornarRetrasos() > 0) {
+			return true;
+		}
+		
 		return false;
 	}
 
 	@Override
 	public List<Tupla<Integer, String>> empleados() {		
-		return null;
+		List<Tupla<Integer, String>> listaEmpleados = new ArrayList<>();
+		
+		for (Empleado e : empleados.values()) {
+			listaEmpleados.add(new Tupla<>(e.retornarLegajo(), e.retornarNombre()));
+		}
+		
+		return listaEmpleados;
 	}
 
 	@Override
 	public String consultarProyecto(Integer numero) {	
-		return null;
+		return proyectos.get(numero).toString();
 	}
 	
 	//Método auxiliar que devuelve al empleado disponible con menos retrasos.

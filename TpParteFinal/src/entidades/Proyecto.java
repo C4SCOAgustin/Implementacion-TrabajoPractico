@@ -1,8 +1,10 @@
 package entidades;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Proyecto {	
@@ -11,7 +13,7 @@ public class Proyecto {
 	private String domicilio;
 	private Cliente cliente;
 	private LocalDate fechaInicio, fechaEstimadaFin, fechaRealFin;
-	private static int ultimoNumeroProyecto = 1;
+	private static int ultimoNumeroProyecto = 0;
 	private int numeroProyecto;
 	private double costoFinal;
 	private boolean finalizado;
@@ -111,7 +113,7 @@ public class Proyecto {
 		 return costoFinal;
 	}
 	
-	public HashMap<String, Tarea> getTareas() {	
+	public HashMap<String, Tarea> retornarTareas() {
 	    return tareas;
 	}
 	
@@ -166,5 +168,15 @@ public class Proyecto {
 		}
 		
 		return false;	
-	}	
+	}
+	
+	public List<Tupla<Integer, String>> retornarEmpleados() {
+		List<Tupla<Integer, String>> empleados = new ArrayList<>();
+		
+		for (Tarea t : tareas.values()) {
+			empleados.add(new Tupla<>(t.retornarEmpleadoResponsable(), domicilio));
+		}
+		
+		return empleados;
+	}
 }

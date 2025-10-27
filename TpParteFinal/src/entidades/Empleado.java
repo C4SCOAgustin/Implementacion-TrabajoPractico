@@ -4,7 +4,7 @@ public abstract class Empleado {
 	//DATOS-ATRIBUTOS
 	private final String nombre;
 	private final double valor;
-	private static int ultimoNumeroLegajo = 1;
+	private static int ultimoNumeroLegajo = 0;
 	private final int numeroLegajo;
 	private boolean estaDisponible;
 	private int retrasos;
@@ -16,6 +16,8 @@ public abstract class Empleado {
 		this.valor = valor;
 		ultimoNumeroLegajo ++;
 		numeroLegajo = ultimoNumeroLegajo;
+		estaDisponible = true;
+		retrasos = 0;
 	}
 	
 	public abstract TipoContrato retornarTipoContrato();	
