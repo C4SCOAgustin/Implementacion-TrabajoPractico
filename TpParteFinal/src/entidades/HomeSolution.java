@@ -135,6 +135,10 @@ public class HomeSolution implements IHomeSolution {
 			throw new IllegalArgumentException("El proyecto no existe.");
 		}
 		
+		if (proyectos.get(numero).estaFinalizado()) {
+			throw new IllegalArgumentException("El proyecto esta finalizado.");
+		}
+		
 		if (titulo == null || titulo.equals("")) {
 			throw new IllegalArgumentException("El título ingresado es invalido.");
 		}

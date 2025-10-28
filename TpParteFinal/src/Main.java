@@ -34,7 +34,7 @@ public class Main {
         homeSolution.registrarProyecto(titulos, descripciones, duracion, "Domicilio 10", cliente1, "2025-10-27", "2025-11-20" );
         
         homeSolution.finalizarTarea(1, "Pintar");
-//        homeSolution.finalizarTarea(1, "Instalacion electrica");
+        homeSolution.finalizarTarea(1, "Instalacion electrica");
         
         //System.out.println(((Tarea) homeSolution.tareasDeUnProyecto(homeSolution.proyectosPendientes().get(0).getValor1())[0]).retornarTitulo());
         //System.out.println(((Tarea) homeSolution.tareasDeUnProyecto(homeSolution.proyectosPendientes().get(0).getValor1())[0]).retornarEmpleadoResponsable());
