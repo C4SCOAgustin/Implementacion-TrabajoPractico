@@ -7,7 +7,7 @@ public class Tarea {
 	private double diasNecesarios;
 	private int empleadoResponsable;
 	private double diasRetraso;
-	private boolean estaFinalizada;
+	private boolean finalizada;
 
 	//MÉTODOS-OPERACIONES
 	//Constructor.
@@ -29,11 +29,11 @@ public class Tarea {
 	
 	//Finaliza la tarea y devuelve verdadero si pudo hacerlo o falso si ya estaba finalizada (boolean)
 	public boolean finalizarTarea() {	
-		if (estaFinalizada) {
+		if (finalizada) {
 		        return false;
 		    }
 		
-		estaFinalizada = true; 
+		finalizada = true; 
 		return true; 
 	}
 	
@@ -58,8 +58,8 @@ public class Tarea {
 	}
 	
 	//Retorna el estado de la tarea en verdadero si está terminada o falso si no lo está (boolean).
-	public boolean retornarEstadoTarea() {		
-		return estaFinalizada;
+	public boolean retornarFinalizada() {		
+		return finalizada;
 	}
 	
 	public String toString() {

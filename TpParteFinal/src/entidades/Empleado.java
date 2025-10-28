@@ -64,4 +64,9 @@ public abstract class Empleado {
 	public String toString() {
 		return nombre;
 	}
+	
+	@Override
+	public String toString() {
+		return "" + numeroLegajo;
+	}
 }

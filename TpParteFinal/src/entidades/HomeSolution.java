@@ -225,7 +225,7 @@ public class HomeSolution implements IHomeSolution {
 			 throw new IllegalArgumentException("No existe el proyecto con número: " + numero);
 		 }
 		 
-		 Tarea tarea = proyecto.obtenerTareaPorTitulo(titulo);
+		 Tarea tarea = proyecto.retornarTareaPorTitulo(titulo);
 		    
 		 if (tarea == null) {
 			 throw new IllegalArgumentException("No existe la tarea con título: " + titulo);
@@ -285,7 +285,7 @@ public class HomeSolution implements IHomeSolution {
 		List<Tupla<Integer, String>> pendientes = new ArrayList<>();
 
 	    for (Proyecto p : proyectos.values()) {	        
-	        if (!p.estaFinalizado() && !p.listarTareasPendientes().isEmpty()) {
+	        if (!p.estaFinalizado() && !p.retornarTareasPendientes().isEmpty()) {
 	        	pendientes.add(new Tupla<>(p.retornarNumeroProyecto(), p.retornarDomicilio()));
 	        }
 	    }
@@ -298,7 +298,7 @@ public class HomeSolution implements IHomeSolution {
 		List<Tupla<Integer, String>> activos = new ArrayList<>();
 		
 		for (Proyecto p : proyectos.values()) {			
-			if (p.tieneTareasActivas()) {
+			if (!p.estaFinalizado()) {
 				activos.add(new Tupla<>(p.retornarNumeroProyecto(), p.retornarDomicilio()));
 			}
 		}
@@ -342,7 +342,7 @@ public class HomeSolution implements IHomeSolution {
 
 	@Override
 	public Object[] tareasProyectoNoAsignadas(Integer numero) {	
-		return proyectos.get(numero).listarTareasPendientes().toArray(new Tarea[0]);
+		return proyectos.get(numero).retornarTareasPendientes().toArray(new Tarea[0]);
 	}
 
 	@Override

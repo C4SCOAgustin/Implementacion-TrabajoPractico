@@ -177,7 +177,7 @@ public class GestionProyectos extends  JPanel{
                 nuevaTarea.setVisible(true);
                 String titulo=nuevaTarea.getTitulo();
                 String descripcion=nuevaTarea.getDescripcion();
-                String dias=nuevaTarea.getDescripcion();
+                String dias=nuevaTarea.getDias();
                 try{
                     panelManager.sistema().agregarTareaEnProyecto(panelManager.consultarSeleccionado(),
                             titulo,descripcion,Double.parseDouble(dias));

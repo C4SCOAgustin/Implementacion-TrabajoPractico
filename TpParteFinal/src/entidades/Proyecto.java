@@ -50,6 +50,11 @@ public class Proyecto {
 		if (!tareas.containsKey(tituloTarea)) {
 			throw new Exception("La tarea no existe");
 		}
+		
+		if (tareas.get(tituloTarea).retornarFinalizada()) {
+			throw new Exception("La tarea esta finalizada");
+		}
+		
 		if (tareas.get(tituloTarea).retornarEmpleadoResponsable() != 0) {
 			throw new Exception("La tarea ya tiene un empleado asignado");
 		}
@@ -98,7 +103,7 @@ public class Proyecto {
 	}
 		
 	public void finalizarProyecto() {
-		boolean todasFinalizadas = tareas.values().stream().allMatch(Tarea::retornarEstadoTarea);
+		boolean todasFinalizadas = tareas.values().stream().allMatch(Tarea::retornarFinalizada);
 
 		    if (!todasFinalizadas) {	    	
 		        System.out.println("No se puede finalizar el proyecto. Todavía hay tareas pendientes.");
@@ -136,7 +141,7 @@ public class Proyecto {
 	        }
 	    }
 	 
-	 public Tarea obtenerTareaPorTitulo(String titulo) {		 
+	 public Tarea retornarTareaPorTitulo(String titulo) {		 
 		    return tareas.get(titulo);
 		}
 
@@ -148,10 +153,10 @@ public class Proyecto {
 		    return domicilio;
 		}
 	
-	public Set<Tarea> listarTareasPendientes() {	
+	public Set<Tarea> retornarTareasPendientes() {	
         Set<Tarea> pendientes = new HashSet<>();
 		    for (Tarea t : tareas.values()) {
-		        if (!t.retornarEstadoTarea()) {
+		        if (!t.retornarFinalizada()) {
 		            pendientes.add(t);
 		        }
 		    }
@@ -161,16 +166,6 @@ public class Proyecto {
 	
 	public int retornarNumeroProyecto() {		
 		return numeroProyecto;
-	}
-	
-	public boolean tieneTareasActivas() {
-		for(Tarea t : tareas.values()) {		
-			if(t.retornarEstadoTarea()) {
-				return true;
-			}
-		}
-		
-		return false;	
 	}
 	
 	public Set<Integer> retornarEmpleados() {
