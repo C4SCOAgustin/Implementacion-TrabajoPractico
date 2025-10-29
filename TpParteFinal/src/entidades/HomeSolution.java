@@ -111,6 +111,7 @@ public class HomeSolution implements IHomeSolution {
 		}
 		
 		proyectos.get(numero).asignarEmpleadoATarea(titulo, mejorEmpleado.retornarLegajo());
+		mejorEmpleado.ocuparEmpleado();
 	}
 
 	@Override
@@ -171,7 +172,7 @@ public class HomeSolution implements IHomeSolution {
 			throw new IllegalArgumentException("No existe el proyecto con número: " + numero);
 		}
 		
-		proyecto.finalizarProyecto();		
+		proyecto.finalizarProyecto(fin);		
 	}
 
 	@Override
@@ -253,7 +254,7 @@ public class HomeSolution implements IHomeSolution {
 			 throw new Exception("No hay empleados disponibles para reasignar.");
 		 }
 		 
-		 empleadoActual.desocuparEmpleado();		    
+		 empleadoActual.desocuparEmpleado();	    
 		 tarea.asignarEmpleado(mejorEmpleado.retornarLegajo());
 		 mejorEmpleado.ocuparEmpleado();
 		 proyecto.reducirCosto(empleadoActual.retornarValor());
@@ -312,15 +313,15 @@ public class HomeSolution implements IHomeSolution {
 
 	@Override
 	public Object[] empleadosNoAsignados() {
-		List<Empleado> empleadosLibres = new ArrayList<>();
+		List<Integer> empleadosLibres = new ArrayList<>();
 		
 		for (Empleado e : empleados.values()) {
 			if (e.retornarDisponibilidad()) {
-				empleadosLibres.add(e);
+				empleadosLibres.add(e.retornarLegajo());
 			}
 		}
 		
-		return empleadosLibres.toArray(new Empleado[0]);
+		return empleadosLibres.toArray(new Integer[0]);
 	}
 
 	@Override
@@ -351,7 +352,6 @@ public class HomeSolution implements IHomeSolution {
 
 	@Override
 	public Object[] tareasDeUnProyecto(Integer numero) {
-		System.out.println("aca: " + proyectos.get(numero).retornarTareas().values().toArray(new Tarea[0])[0].retornarTitulo());
 		return proyectos.get(numero).retornarTareas().values().toArray(new Tarea[0]);
 	}
 
@@ -361,7 +361,7 @@ public class HomeSolution implements IHomeSolution {
 	}
 
 	@Override
-	public boolean tieneRestrasos(Integer legajo) {		
+	public boolean tieneRetrasos(Integer legajo) {		
 		if (empleados.get(legajo).retornarRetrasos() > 0) {
 			return true;
 		}

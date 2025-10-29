@@ -47,7 +47,6 @@ public class GestionProyectos extends  JPanel{
         armarPantalla(modelTabla);
         tareas.setModel(new DefaultComboBoxModel(listaTareas));
         tareas.setSelectedIndex(-1);
-        System.out.println();
         volverPrincipal.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -114,7 +113,7 @@ public class GestionProyectos extends  JPanel{
                         panelManager.sistema().reasignarEmpleadoEnProyecto(panelManager.consultarSeleccionado(), legajo, titulo);
                         }
                         catch (Exception exception ){
-                            JOptionPane.showMessageDialog(null, "No hay empleado asignado anterioremente");
+                            JOptionPane.showMessageDialog(null, "No hay empleado asignado anteriormente");
                         }
                     }
                 }
@@ -144,7 +143,13 @@ public class GestionProyectos extends  JPanel{
             public void actionPerformed(ActionEvent actionEvent) {
                 if (seleccionValida()) {
                     String titulo = tareas.getSelectedItem().toString();
-                    panelManager.sistema().finalizarTarea(panelManager.consultarSeleccionado(), titulo);
+                    try {
+                        panelManager.sistema().finalizarTarea(panelManager.consultarSeleccionado(), titulo);
+                    }
+                    catch (Exception ex)
+                    {
+                        JOptionPane.showMessageDialog(null,"La tarea ya estaba finalizada");
+                    }
                 }
                 else{
                     JOptionPane.showMessageDialog(null,"No hay tarea seleccionada");
@@ -267,7 +272,7 @@ public class GestionProyectos extends  JPanel{
 
         asignarEmpleado=new JButton("Asignar empleado");
         asignarEmpleadoEficiente=new JButton("Asignar empleado con menos retrasos");
-        registrarRetrasoEnTarea=new JButton("Regristrar retraso en tarea");
+        registrarRetrasoEnTarea=new JButton("Registrar retraso en tarea");
         establecerComoFinalizada=new JButton("Establecer tarea como finalizada");
         reasignarEmpleado=new JButton("Cambiar empleado reponsable");
         reasignarEmpleadoEficiente=new JButton("Cambiar empleado por el que tenga menos retrasos");
@@ -275,7 +280,7 @@ public class GestionProyectos extends  JPanel{
         proyectoFinalizado=new JButton("Establecer como finalizado");
         costoActualProyecto=new JButton("Consultar costo actual proyecto");
         empleadosAsignados=new JButton("Empleados asignados");
-        datosProyecto=new JButton("Ver imformación del proyecto");
+        datosProyecto=new JButton("Ver información del proyecto");
         volverPrincipal=new JButton("Volver al menu");
         gestionProyecto=new JPanel();
         gestionProyecto.setLayout(new GridBagLayout());
@@ -345,8 +350,5 @@ public class GestionProyectos extends  JPanel{
             reasignarEmpleadoEficiente.setEnabled(false);
             establecerComoFinalizada.setEnabled(false);
         }
-
     }
-
-
 }

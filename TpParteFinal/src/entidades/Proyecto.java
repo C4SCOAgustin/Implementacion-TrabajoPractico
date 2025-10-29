@@ -102,7 +102,7 @@ public class Proyecto {
 	    }
 	}
 		
-	public void finalizarProyecto() {
+	public void finalizarProyecto(String fechaFin) {
 		boolean todasFinalizadas = tareas.values().stream().allMatch(Tarea::retornarFinalizada);
 
 		    if (!todasFinalizadas) {	    	
@@ -110,8 +110,18 @@ public class Proyecto {
 		        return; 
 		    }
 		    
+		    if (fechaRealFin != null) {    	
+		        System.out.println("Proyecto ya finalizado");
+		        return; 
+		    }
+		    
+		    if (fechaFin == null || fechaFin.length() != 10) {	    	
+		        System.out.println("La fecha ingresada debe estar en formato YYYY/MM/DD");
+		        return; 
+		    }
+		    
 		    finalizado = true;
-		    fechaRealFin = LocalDate.now();
+		    fechaRealFin = LocalDate.parse(fechaFin);
 		    costoFinal = calcularCostoProyecto(); 
 
 		    System.out.println("Proyecto #" + numeroProyecto + " finalizado correctamente.");	
