@@ -218,7 +218,7 @@ public interface IHomeSolution {
      * @param numero Número o código del proyecto.
      * @return Arreglo de tareas sin asignar.
      */
-    public Object[] tareasProyectoNoAsignadas(Integer numero);
+    public Object[] tareasProyectoNoAsignadas(Integer numero) ;
     /**
      * Devuelve las tareas no asignadas de un proyecto.
      * @param numero Número o código del proyecto.
@@ -232,14 +232,14 @@ public interface IHomeSolution {
      * @param numero Número o código del proyecto.
      * @return Dirección donde se realiza el proyecto.
      */
-    public String consultarDomicilioProyecto(Integer numero);
+    public String consultarDomicilioProyecto(Integer numero) ;
 
     /**
      * Indica si un empleado tiene retrasos en tareas asignadas.
      * @param legajo Legajo del empleado.
      * @return true si tiene retrasos, false en caso contrario.
      */
-    public boolean tieneRetrasos(Integer legajo);
+    public boolean tieneRetrasos(Integer legajo) ;
 
     /**
      * Devuelve la lista de todos los empleados registrados.

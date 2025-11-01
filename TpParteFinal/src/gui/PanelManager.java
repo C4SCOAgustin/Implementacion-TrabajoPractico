@@ -1,6 +1,6 @@
 package gui;
 
-import entidades.IHomeSolution;
+import entidades.HomeSolution;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +8,7 @@ import java.awt.*;
 public class PanelManager {
 
     private JFrame jFrame;
-    private IHomeSolution homeSolution;
+    private HomeSolution homeSolution;
     private Integer seleccionado;
     private PanelPrincipal principal;
     private FormularioProyecto formularioProyecto;
@@ -18,7 +18,7 @@ public class PanelManager {
     private GestionProyectos gestionProyectos;
     private GestionEmpleados gestionEmpleados;
 
-    public PanelManager(IHomeSolution h)
+    public PanelManager(HomeSolution h)
     {   jFrame=new JFrame();
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         principal=new PanelPrincipal(this);
@@ -36,7 +36,7 @@ public class PanelManager {
         jFrame.pack();
     }
 
-    public IHomeSolution sistema() {
+    public HomeSolution sistema() {
         return homeSolution;
     }
 
@@ -52,7 +52,7 @@ public class PanelManager {
         if (codigoPantalla==1)
              mostrar(principal);
         if (codigoPantalla==3){
-            gestionEmpleados=gestionEmpleados==null?new GestionEmpleados(this):gestionEmpleados;
+            gestionEmpleados=new GestionEmpleados(this);
             mostrar(gestionEmpleados);
         }
         if (codigoPantalla==2){
@@ -64,11 +64,11 @@ public class PanelManager {
             mostrar(formularioProyecto);
         }
         if (codigoPantalla==5) {
-           listaProyectos = listaProyectos == null ? new ListaProyectos(this) : listaProyectos;
+           listaProyectos = new ListaProyectos(this);
             mostrar(listaProyectos);
         }
         if (codigoPantalla==6) {
-            gestionProyectos= gestionProyectos == null ? new GestionProyectos(this) : gestionProyectos;
+            gestionProyectos= new GestionProyectos(this);
             mostrar(gestionProyectos);
         }
 

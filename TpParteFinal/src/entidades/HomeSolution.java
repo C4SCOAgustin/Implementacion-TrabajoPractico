@@ -96,6 +96,8 @@ public class HomeSolution implements IHomeSolution {
 				return;
 			}
 		}
+		
+		throw new Exception("No hay suficientes empleados disponibles");
 	}
 
 	@Override
@@ -125,7 +127,7 @@ public class HomeSolution implements IHomeSolution {
 			throw new IllegalArgumentException("Los días ingresados deben ser mayores a 0.");
 		}
 		
-		int empleadoResponsable = proyectos.get(numero).registrarRetrasoTarea(titulo, cantidadDias);
+		Integer empleadoResponsable = proyectos.get(numero).registrarRetrasoTarea(titulo, cantidadDias);
 		empleados.get(empleadoResponsable).añadirRetraso();
 	}
 
@@ -162,7 +164,11 @@ public class HomeSolution implements IHomeSolution {
 	        throw new IllegalArgumentException("No existe el proyecto con número: " + numero);
 	    }
 	    
-	    proyecto.finalizarTarea(titulo); 
+	    Integer empleadoTarea = proyecto.finalizarTarea(titulo);
+	    
+	    if (empleadoTarea != null) {
+	    	empleados.get(empleadoTarea).desocuparEmpleado();
+	    }
 	}
 
 	@Override
@@ -189,7 +195,7 @@ public class HomeSolution implements IHomeSolution {
 	        throw new IllegalArgumentException("No existe la tarea con título: " + titulo);
 	    }
 	    
-	    int legajoAnterior = tarea.retornarEmpleadoResponsable();
+	    Integer legajoAnterior = tarea.retornarEmpleadoResponsable();
 	    
 	    if (legajoAnterior == 0) {
 	        throw new Exception("La tarea no tiene empleado asignado previamente.");
@@ -236,7 +242,7 @@ public class HomeSolution implements IHomeSolution {
 			 throw new IllegalArgumentException("No existe la tarea con título: " + titulo);
 		 }
 		 
-		 int legajoActual = tarea.retornarEmpleadoResponsable();
+		 Integer legajoActual = tarea.retornarEmpleadoResponsable();
 		 
 		 if (legajoActual == 0) {
 			 throw new Exception("La tarea no tiene un empleado asignado actualmente.");
@@ -285,12 +291,14 @@ public class HomeSolution implements IHomeSolution {
         return lista;		
 	}
 
+	
+	//No esta finalizado, tiene tareas pendientes y tiene tareas sin asignar
 	@Override
 	public List<Tupla<Integer, String>> proyectosPendientes() {
 		List<Tupla<Integer, String>> pendientes = new ArrayList<>();
 
-	    for (Proyecto p : proyectos.values()) {	        
-	        if (!p.estaFinalizado() && !p.retornarTareasPendientes().isEmpty()) {
+	    for (Proyecto p : proyectos.values()) {
+	        if (!p.estaFinalizado() && !p.retornarTareasPendientes().isEmpty() && !p.retornarTareasNoAsignadas().isEmpty()) {
 	        	pendientes.add(new Tupla<>(p.retornarNumeroProyecto(), p.retornarDomicilio()));
 	        }
 	    }
@@ -298,12 +306,13 @@ public class HomeSolution implements IHomeSolution {
 	    return pendientes;
 	}
 
+	//No esta finalizado y no tiene tareas sin asignar
 	@Override
 	public List<Tupla<Integer, String>> proyectosActivos() {		
 		List<Tupla<Integer, String>> activos = new ArrayList<>();
 		
 		for (Proyecto p : proyectos.values()) {			
-			if (!p.estaFinalizado()) {
+			if (!p.estaFinalizado() && p.retornarTareasNoAsignadas().isEmpty()) {
 				activos.add(new Tupla<>(p.retornarNumeroProyecto(), p.retornarDomicilio()));
 			}
 		}
@@ -347,7 +356,7 @@ public class HomeSolution implements IHomeSolution {
 
 	@Override
 	public Object[] tareasProyectoNoAsignadas(Integer numero) {	
-		return proyectos.get(numero).retornarTareasPendientes().toArray(new Tarea[0]);
+		return proyectos.get(numero).retornarTareasNoAsignadas().toArray(new Tarea[0]);
 	}
 
 	@Override

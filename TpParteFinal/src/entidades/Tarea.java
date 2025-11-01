@@ -5,7 +5,7 @@ public class Tarea {
 	private String titulo; 
 	private String descripcion;
 	private double diasNecesarios;
-	private int empleadoResponsable;
+	private Integer empleadoResponsable;
 	private double diasRetraso;
 	private boolean finalizada;
 
@@ -18,23 +18,24 @@ public class Tarea {
 	}
 	
 	//Asigna un número de legajo relacionado a un empleado como responsable de la tarea (void).
-	public void asignarEmpleado(int nLegajo) {	
+	public void asignarEmpleado(Integer nLegajo) {	
 		this.empleadoResponsable = nLegajo;
 	}
 	
-	//Añade días de retraso a la tarea y retorna al empleadoResponsable (int).
-	public int registrarRetraso(double añadirRetraso) {	
+	//Añade días de retraso a la tarea y retorna al empleadoResponsable (Integer).
+	public Integer registrarRetraso(double añadirRetraso) {	
 		return empleadoResponsable;
 	}
 	
-	//Finaliza la tarea y devuelve verdadero si pudo hacerlo o falso si ya estaba finalizada (boolean)
-	public boolean finalizarTarea() {	
+	//Finaliza la tarea y el número de legajo del empleado responsable o -1 si no hay ningun empleado (Integer)
+	public Integer finalizarTarea() {
 		if (finalizada) {
-		        return false;
-		    }
-		
-		finalizada = true; 
-		return true; 
+	        throw new IllegalArgumentException("La tarea " + titulo + " ya esta finalizada");
+		}
+		finalizada = true;
+		Integer leg = empleadoResponsable;
+		empleadoResponsable = null;
+		return leg;
 	}
 	
 	//Retorna el título de la tarea como una cadena(String).
@@ -42,8 +43,8 @@ public class Tarea {
 		return titulo;
 	}
 	
-	//Retorna el número de legajo del empleado responsable de la tarea (int).
-	public int retornarEmpleadoResponsable() {	
+	//Retorna el número de legajo del empleado responsable de la tarea (Integer).
+	public Integer retornarEmpleadoResponsable() {
 		return empleadoResponsable;
 	}
 	

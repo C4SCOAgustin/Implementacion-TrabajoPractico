@@ -2,6 +2,7 @@ package entidades;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,8 +14,8 @@ public class Proyecto {
 	private String domicilio;
 	private Cliente cliente;
 	private LocalDate fechaInicio, fechaEstimadaFin, fechaRealFin;
-	private static int ultimoNumeroProyecto = 0;
-	private int numeroProyecto;
+	private static Integer ultimoNumeroProyecto = 0;
+	private Integer numeroProyecto;
 	private double costoFinal;
 	private boolean finalizado;
 
@@ -34,6 +35,14 @@ public class Proyecto {
 			throw new IllegalArgumentException("El teléfono de cliente ingresado es invalido.");
 		}
 		
+//		if (LocalDate.parse(fechaEstimadaFin).isBefore(LocalDate.now())) {
+//			throw new IllegalArgumentException("La fecha de fin debe ser posterior a la fecha actual.");
+//		}
+		
+		if (LocalDate.parse(fechaInicio).isAfter(LocalDate.parse(fechaEstimadaFin))) {
+			throw new IllegalArgumentException("La fecha de fin debe ser posterior a la fecha de inicio.");
+		}
+		
 		for (int i = 0; i < titulos.length; i++) {		
 			registrarTarea(titulos[i], descripciones[i], dias[i]);
 		}
@@ -43,26 +52,26 @@ public class Proyecto {
 		this.fechaInicio = LocalDate.parse(fechaInicio);
 		this.fechaEstimadaFin = LocalDate.parse(fechaEstimadaFin);	
 		ultimoNumeroProyecto ++;
-		numeroProyecto = ultimoNumeroProyecto;		
+		numeroProyecto = ultimoNumeroProyecto;	
 	}
 	
-	public void asignarEmpleadoATarea(String tituloTarea, int nLegajo) throws Exception {
+	public void asignarEmpleadoATarea(String tituloTarea, Integer nLegajo) throws Exception {
 		if (!tareas.containsKey(tituloTarea)) {
-			throw new Exception("La tarea no existe");
+			throw new Exception("La tarea no existe.");
 		}
 		
 		if (tareas.get(tituloTarea).retornarFinalizada()) {
-			throw new Exception("La tarea esta finalizada");
+			throw new Exception("La tarea esta finalizada.");
 		}
 		
-		if (tareas.get(tituloTarea).retornarEmpleadoResponsable() != 0) {
-			throw new Exception("La tarea ya tiene un empleado asignado");
+		if (tareas.get(tituloTarea).retornarEmpleadoResponsable() != null) {
+			throw new Exception("La tarea ya tiene un empleado asignado.");
 		}
 		
-		tareas.get(tituloTarea).asignarEmpleado(nLegajo);		
+		tareas.get(tituloTarea).asignarEmpleado(nLegajo);
 	}
 	
-	public int registrarRetrasoTarea(String tituloTarea, double diasRetraso) {	
+	public Integer registrarRetrasoTarea(String tituloTarea, double diasRetraso) {	
 		return tareas.get(tituloTarea).registrarRetraso(diasRetraso);
 	}
 	
@@ -72,9 +81,9 @@ public class Proyecto {
 			throw new IllegalArgumentException("El título ingresado es invalido.");
 		}
 		
-		if(descripcionTarea == null || descripcionTarea.equals("")) {
-			throw new IllegalArgumentException("La descripción ingresada es invalida.");
-		}
+//		if(descripcionTarea == null || descripcionTarea.equals("")) {
+//			throw new IllegalArgumentException("La descripción ingresada es invalida.");
+//		}
 			
 		if(diasNecesariosTarea <= 0) {
 			throw new IllegalArgumentException("Los días necesarios deben ser mayores a 0.");
@@ -84,48 +93,49 @@ public class Proyecto {
 		tareas.put(t.retornarTitulo(), t);
 	}
 	
-	public void finalizarTarea(String tituloTarea) {
-		Tarea tarea = tareas.get(tituloTarea); 
-
-	    if (tarea == null) {
+	public Integer finalizarTarea(String tituloTarea) {
+		
+		if (tituloTarea == null || tituloTarea.equals("")) {
+	        throw new IllegalArgumentException("El titulo ingresado no puede ser nula");
+		}
+		
+	    if (!tareas.containsKey(tituloTarea)) {
 	        throw new IllegalArgumentException("No existe la tarea con título: " + tituloTarea);
 	    }
 	    
-	    boolean exito = tarea.finalizarTarea(); 
-
-	    if (!exito) {
-	    	System.out.println("La tarea '" + tituloTarea + "' ya estaba finalizada.");
-	    }
-	    
-	    else {	
-	        System.out.println("Tarea '" + tituloTarea + "' finalizada correctamente.");
-	    }
+	    return tareas.get(tituloTarea).finalizarTarea();	    
 	}
 		
 	public void finalizarProyecto(String fechaFin) {
 		boolean todasFinalizadas = tareas.values().stream().allMatch(Tarea::retornarFinalizada);
 
 		    if (!todasFinalizadas) {	    	
-		        System.out.println("No se puede finalizar el proyecto. Todavía hay tareas pendientes.");
-		        return; 
+		        throw new IllegalArgumentException("No se puede finalizar el proyecto. Todavía hay tareas pendientes.");
 		    }
-		    
-		    if (fechaRealFin != null) {    	
-		        System.out.println("Proyecto ya finalizado");
-		        return; 
-		    }
-		    
-		    if (fechaFin == null || fechaFin.length() != 10) {	    	
-		        System.out.println("La fecha ingresada debe estar en formato YYYY/MM/DD");
-		        return; 
-		    }
-		    
-		    finalizado = true;
-		    fechaRealFin = LocalDate.parse(fechaFin);
-		    costoFinal = calcularCostoProyecto(); 
-
-		    System.out.println("Proyecto #" + numeroProyecto + " finalizado correctamente.");	
+		
+//		Set<Tarea> pendientes = retornarTareasPendientes();
+//		
+//		if (pendientes.isEmpty()) {
+//			for (Tarea t : pendientes) {
+//				t.finalizarTarea();
+//				System.out.println("La tarea " + t.toString() + " fue finalizada automaticamente.");
+//			}
+//		}
+		
+		if (fechaRealFin != null) {    	
+			throw new IllegalArgumentException("Proyecto ya finalizado");
 		}
+		    
+		if (fechaFin == null || fechaFin.length() != 10) {	    	
+			throw new IllegalArgumentException("La fecha ingresada debe estar en formato YYYY/MM/DD");
+		}
+		    
+		finalizado = true;
+		fechaRealFin = LocalDate.parse(fechaFin);
+		costoFinal = calcularCostoProyecto(); 
+
+		System.out.println("Proyecto #" + numeroProyecto + " finalizado correctamente.");	
+	}
 
 	public double calcularCostoProyecto() {	
 		 return costoFinal;
@@ -174,7 +184,7 @@ public class Proyecto {
 		    return pendientes;
 		}
 	
-	public int retornarNumeroProyecto() {		
+	public Integer retornarNumeroProyecto() {		
 		return numeroProyecto;
 	}
 	
@@ -182,7 +192,7 @@ public class Proyecto {
 		Set<Integer> empleados = new HashSet<>();
 		
 		for (Tarea t : tareas.values()) {
-			if (t.retornarEmpleadoResponsable() > 0) {
+			if (t.retornarEmpleadoResponsable() != null) {
 				empleados.add(t.retornarEmpleadoResponsable());
 			}
 		}
@@ -193,5 +203,17 @@ public class Proyecto {
 	@Override
 	public String toString() {
 		return "El número de proyecto es: " + numeroProyecto;
+	}
+
+	public Set<Tarea> retornarTareasNoAsignadas() {	
+    Set<Tarea> noAsignadas = new HashSet<>();
+    
+	for (Tarea t : tareas.values()) {
+		if (t.retornarEmpleadoResponsable() == null) {
+			noAsignadas.add(t);
+		}
+	}
+	
+	return noAsignadas;
 	}
 }

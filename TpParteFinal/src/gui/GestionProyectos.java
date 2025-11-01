@@ -113,7 +113,7 @@ public class GestionProyectos extends  JPanel{
                         panelManager.sistema().reasignarEmpleadoEnProyecto(panelManager.consultarSeleccionado(), legajo, titulo);
                         }
                         catch (Exception exception ){
-                            JOptionPane.showMessageDialog(null, "No hay empleado asignado anteriormente");
+                            JOptionPane.showMessageDialog(null, "No hay empleado asignado anterioremente");
                         }
                     }
                 }
@@ -272,7 +272,7 @@ public class GestionProyectos extends  JPanel{
 
         asignarEmpleado=new JButton("Asignar empleado");
         asignarEmpleadoEficiente=new JButton("Asignar empleado con menos retrasos");
-        registrarRetrasoEnTarea=new JButton("Registrar retraso en tarea");
+        registrarRetrasoEnTarea=new JButton("Regristrar retraso en tarea");
         establecerComoFinalizada=new JButton("Establecer tarea como finalizada");
         reasignarEmpleado=new JButton("Cambiar empleado reponsable");
         reasignarEmpleadoEficiente=new JButton("Cambiar empleado por el que tenga menos retrasos");
@@ -280,7 +280,7 @@ public class GestionProyectos extends  JPanel{
         proyectoFinalizado=new JButton("Establecer como finalizado");
         costoActualProyecto=new JButton("Consultar costo actual proyecto");
         empleadosAsignados=new JButton("Empleados asignados");
-        datosProyecto=new JButton("Ver información del proyecto");
+        datosProyecto=new JButton("Ver imformación del proyecto");
         volverPrincipal=new JButton("Volver al menu");
         gestionProyecto=new JPanel();
         gestionProyecto.setLayout(new GridBagLayout());

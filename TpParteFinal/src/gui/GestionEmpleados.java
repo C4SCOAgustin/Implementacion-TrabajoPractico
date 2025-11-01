@@ -18,7 +18,6 @@ public class GestionEmpleados extends JPanel{
     private JTable tablaEmpleados;
     private JScrollPane scrollPane;
     private JButton verRetrasos;
-    private JButton refrescar;
     private JButton volverPrincipal;
 
     public GestionEmpleados(PanelManager panelManager) {
@@ -27,7 +26,6 @@ public class GestionEmpleados extends JPanel{
     }
 
     public void armarFormulario() {
-    	
         DefaultTableModel modelTabla = new DefaultTableModel();
         armarPantalla(modelTabla);
         cargarTabla(modelTabla);
@@ -36,7 +34,6 @@ public class GestionEmpleados extends JPanel{
             public void actionPerformed(ActionEvent e) {
                 panelManager.mostrar(1);
             }
-            
         });
 
         verRetrasos.addActionListener(new ActionListener() {
@@ -46,16 +43,9 @@ public class GestionEmpleados extends JPanel{
                     if (filaSeleccionada != -1) {
                         int fila = tablaEmpleados.getSelectedRow();
                         int retrasos=panelManager.sistema().consultarCantidadRetrasosEmpleado(Integer.parseInt(tablaEmpleados.getValueAt(fila, 0).toString()));
-                        String mensaje=retrasos==0?"No tiene retrasos":"Tiene: "+retrasos +" retrasos";
+                        String mensaje=retrasos==0?"No tiene retrasos":"Tiene :"+retrasos +" retrasos";
                         JOptionPane.showMessageDialog(null, mensaje);
                     }
-                }
-            });
-        
-        refrescar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-            	cargarTabla(modelTabla);
                 }
             });
 
@@ -74,7 +64,6 @@ public class GestionEmpleados extends JPanel{
         tablaEmpleados=new JTable(modelTabla);
         scrollPane=new JScrollPane(tablaEmpleados);
         verRetrasos=new JButton("Ver retrasos del empleado seleccionado");
-        refrescar=new JButton("Refrescar empleados");
         volverPrincipal = new JButton("Volver al menu");
         gestionEmpleados = new JPanel();
         gestionEmpleados.setLayout(new GridBagLayout());
@@ -86,11 +75,8 @@ public class GestionEmpleados extends JPanel{
         gbc.gridy=1;
         gestionEmpleados.add(scrollPane,gbc);
         gbc.gridx=1;
-        gbc.gridy=3;
+        gbc.gridy=2;
         gestionEmpleados.add(verRetrasos,gbc);
-        gbc.gridx=1;
-        gbc.gridy=4;
-        gestionEmpleados.add(refrescar,gbc);
         gbc.gridx = 2;
         gbc.gridy=3;
         gbc.gridwidth = 2;
