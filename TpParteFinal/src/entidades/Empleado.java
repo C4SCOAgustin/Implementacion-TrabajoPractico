@@ -23,6 +23,8 @@ public abstract class Empleado {
 	//Método abstracto que retorna el tipo de contrato.
 	public abstract TipoContrato retornarTipoContrato();
 	
+	public abstract double calcularCosto(double dias);
+	
 	//Ocupa al empleado.
 	public void ocuparEmpleado() {		
 		estaDisponible = false;

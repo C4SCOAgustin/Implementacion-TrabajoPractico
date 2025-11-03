@@ -16,6 +16,13 @@ public class Contratado extends Empleado {
 	}
 	
 	@Override
+	public double calcularCosto(double dias) {
+	    double horas = dias * 8;
+	    return retornarValor() * horas;
+	}
+	
+	
+	@Override
 	public String toString() {
 		StringBuilder cadena = new StringBuilder();
 		cadena.append(super.toString());

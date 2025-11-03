@@ -95,7 +95,7 @@ public class HomeSolution implements IHomeSolution {
 				proyectos.get(numero).asignarEmpleadoATarea(titulo, e.retornarLegajo());
 				e.ocuparEmpleado();
 				Tarea tarea = proyectos.get(numero).retornarTareaPorTitulo(titulo);
-				double costoTarea = tarea.retornarDiasNecesarios() * e.retornarValor();
+				double costoTarea = e.calcularCosto(tarea.retornarDiasNecesarios());
 				proyectos.get(numero).incrementarCosto(costoTarea);
 				return;
 			}
@@ -122,7 +122,7 @@ public class HomeSolution implements IHomeSolution {
 		proyectos.get(numero).asignarEmpleadoATarea(titulo, mejorEmpleado.retornarLegajo());
 		mejorEmpleado.ocuparEmpleado();
 		Tarea tarea = proyectos.get(numero).retornarTareaPorTitulo(titulo);
-		double costoTarea = tarea.retornarDiasNecesarios() * mejorEmpleado.retornarValor();
+		double costoTarea = mejorEmpleado.calcularCosto(tarea.retornarDiasNecesarios());
 		proyectos.get(numero).incrementarCosto(costoTarea);
 	}
 
@@ -141,7 +141,7 @@ public class HomeSolution implements IHomeSolution {
 		Integer empleadoResponsable = proyectos.get(numero).registrarRetrasoTarea(titulo, cantidadDias);
 		empleados.get(empleadoResponsable).añadirRetraso();
 		Empleado emp = empleados.get(empleadoResponsable);
-		double costoExtra = cantidadDias * emp.retornarValor();
+		double costoExtra = emp.calcularCosto(cantidadDias);
 		proyectos.get(numero).incrementarCosto(costoExtra);
 	}
 
