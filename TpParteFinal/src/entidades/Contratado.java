@@ -14,4 +14,12 @@ public class Contratado extends Empleado {
 	public TipoContrato retornarTipoContrato() {		
 		return TipoContrato.CONTRATADO;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder cadena = new StringBuilder();
+		cadena.append(super.toString());
+		cadena.append(retornarTipoContrato() + "\n");
+		return cadena.toString();
+	}
 }

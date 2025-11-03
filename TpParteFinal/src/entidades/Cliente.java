@@ -19,6 +19,8 @@ public class Cliente {
 	
 	@Override
 	public String toString() {
-		return nombre + " " + email + " " + telefono;
+		StringBuilder cadena = new StringBuilder();
+		cadena.append("Nombre: " + nombre + "\nEmail: " + email + "\nTeléfono: " + telefono);
+		return cadena.toString();
 	}
 }

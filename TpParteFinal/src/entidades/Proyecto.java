@@ -38,6 +38,8 @@ public class Proyecto {
 //		if (LocalDate.parse(fechaEstimadaFin).isBefore(LocalDate.now())) {
 //			throw new IllegalArgumentException("La fecha de fin debe ser posterior a la fecha actual.");
 //		}
+		this.fechaInicio = LocalDate.parse(fechaInicio);
+		this.fechaEstimadaFin = LocalDate.parse(fechaEstimadaFin);	
 		
 		if (LocalDate.parse(fechaInicio).isAfter(LocalDate.parse(fechaEstimadaFin))) {
 			throw new IllegalArgumentException("La fecha de fin debe ser posterior a la fecha de inicio.");
@@ -49,8 +51,6 @@ public class Proyecto {
 	
 		this.domicilio = domicilio;		
 		cliente = new Cliente(datosCliente[0], datosCliente[1], datosCliente[2]);			
-		this.fechaInicio = LocalDate.parse(fechaInicio);
-		this.fechaEstimadaFin = LocalDate.parse(fechaEstimadaFin);	
 		ultimoNumeroProyecto ++;
 		numeroProyecto = ultimoNumeroProyecto;	
 	}
@@ -205,11 +205,6 @@ public class Proyecto {
 		
 		return empleados;
 	}
-	
-	@Override
-	public String toString() {
-		return "El número de proyecto es: " + numeroProyecto;
-	}
 
 	public Set<Tarea> retornarTareasNoAsignadas() {	
     Set<Tarea> noAsignadas = new HashSet<>();
@@ -237,6 +232,30 @@ public class Proyecto {
 		}
 		
 		return estado;
+	}
+	
+	@Override
+	public String toString() {		
+		StringBuilder cadena = new StringBuilder();
+		cadena.append("Número proyecto: " + numeroProyecto + "\n");
+		cadena.append("Estado del proyecto: " + estado + "\n");
+		cadena.append("Cantidad de tareas: " + tareas.size() + "\n");
+		cadena.append(cliente.toString() + "\n");
+		cadena.append("Fecha de inicio: " + fechaInicio + "\n");
+		
+		if (fechaRealFin != null) {
+			cadena.append("Fecha real de fin " + fechaRealFin + "\n");
+		}
+		
+		else {
+			cadena.append("Fecha estimada de fin: " + fechaEstimadaFin + "\n");
+		}
+		
+		if (estado == Estado.finalizado) {
+			cadena.append("Costo: " + costoFinal + "\n");
+		}
+		
+		return cadena.toString();
 	}
 	
 }

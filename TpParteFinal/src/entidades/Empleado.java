@@ -64,6 +64,21 @@ public abstract class Empleado {
 	
 	@Override
 	public String toString() {
-		return nombre;
-	}
+		StringBuilder cadena = new StringBuilder();
+		cadena.append("Nombre: " + nombre + "\n");
+		cadena.append("Legajo: " + numeroLegajo + "\n");
+		cadena.append("Retrasos: " + retrasos + "\n");
+		
+		if (estaDisponible) {
+			cadena.append("Disponibilidad: Disponible" + "\n");
+		}
+		
+		else {
+			cadena.append("Disponibilidad: Ocupado" + "\n");
+		}
+		
+		cadena.append("Valor: " + valor + "\n");
+		
+		return cadena.toString();
+	}	
 }

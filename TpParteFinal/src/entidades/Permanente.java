@@ -21,4 +21,13 @@ public class Permanente extends Empleado {
 	public String retornarCategoria() {	
 		return categoria;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder cadena = new StringBuilder();
+		cadena.append(super.toString());
+		cadena.append("Tipo contrato: " + retornarTipoContrato() + "\n");
+		cadena.append("Categoria: " + categoria + "\n");
+		return cadena.toString();
+	}
 }

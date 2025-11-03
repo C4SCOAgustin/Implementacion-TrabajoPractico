@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -418,4 +419,69 @@ public class HomeSolution implements IHomeSolution {
 		return empleadoMenosRetrasos;	
 	}
 	
+	@Override
+	public String toString() {
+		StringBuilder cadena = new StringBuilder();
+				
+		//proyectos
+		StringBuilder proyectosFinalizados = new StringBuilder("Detalles proyectos finalizados: \n");
+		StringBuilder proyectosActivos = new StringBuilder("Detalles proyectos activos: \n");
+		StringBuilder proyectosPendientes = new StringBuilder("Detalles proyectos pendientes: \n");
+		int contFinalizados = 0;
+		int contActivos = 0;
+		int contPendientes = 0;
+		
+		cadena.append("Cantidad proyectos totales: " + proyectos.size() + "\n");
+		Iterator<Proyecto> it = proyectos.values().iterator();
+		
+		while (it.hasNext()) {
+			Proyecto p = it.next();
+			if (p.retornarEstado() == Estado.finalizado) {
+				contFinalizados ++;
+				proyectosFinalizados.append(p.toString() + "\n");
+			}
+			
+			if (p.retornarEstado() == Estado.activo) {
+				contActivos ++;
+				proyectosActivos.append(p.toString() + "\n");
+			}
+
+			if (p.retornarEstado() == Estado.pendiente) {
+				contPendientes ++;
+				proyectosPendientes.append(p.toString() + "\n");
+			}
+		}
+		
+		cadena.append("cantidad proyectos finalizados: " + contFinalizados + "\n");
+		cadena.append("cantidad proyectos activos: " + contActivos + "\n");
+		cadena.append("cantidad proyectos pendientes: " + contPendientes + "\n" + "\n");
+		
+		if (contFinalizados == 0) {
+			proyectosFinalizados.append("Sin proyectos finalizados.\n");
+		}
+		
+		if (contActivos == 0) {
+			proyectosActivos.append("Sin proyectos activos.\n");
+		}
+		
+		if (contPendientes == 0) {
+			proyectosFinalizados.append("Sin proyectos pendientes.\n");
+		}
+		
+		cadena.append(proyectosFinalizados + "\n");
+		cadena.append(proyectosActivos + "\n");
+		cadena.append(proyectosPendientes);
+		
+		//empleados		
+		cadena.append("Cantidad empleados totales: " + empleados.size() + "\n");		
+		Iterator<Empleado> itEmp = empleados.values().iterator();
+		
+		while (itEmp.hasNext()) {
+			Empleado e = itEmp.next();			
+			cadena.append(e.toString() + "\n");
+		}
+		
+		cadena.delete(cadena.length() - 2, cadena.length());
+		return cadena.toString();
+	}
 }
