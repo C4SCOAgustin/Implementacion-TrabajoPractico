@@ -94,6 +94,9 @@ public class HomeSolution implements IHomeSolution {
 			if (e.retornarDisponibilidad()) {		
 				proyectos.get(numero).asignarEmpleadoATarea(titulo, e.retornarLegajo());
 				e.ocuparEmpleado();
+				Tarea tarea = proyectos.get(numero).retornarTareaPorTitulo(titulo);
+				double costoTarea = tarea.retornarDiasNecesarios() * e.retornarValor();
+				proyectos.get(numero).incrementarCosto(costoTarea);
 				return;
 			}
 		}
@@ -101,6 +104,7 @@ public class HomeSolution implements IHomeSolution {
 		proyectos.get(numero).establecerPendiente();
 		throw new Exception("No hay suficientes empleados disponibles");
 	}
+
 
 	@Override
 	public void asignarResponsableMenosRetraso(Integer numero, String titulo) throws Exception {		
@@ -117,8 +121,12 @@ public class HomeSolution implements IHomeSolution {
 		
 		proyectos.get(numero).asignarEmpleadoATarea(titulo, mejorEmpleado.retornarLegajo());
 		mejorEmpleado.ocuparEmpleado();
+		Tarea tarea = proyectos.get(numero).retornarTareaPorTitulo(titulo);
+		double costoTarea = tarea.retornarDiasNecesarios() * mejorEmpleado.retornarValor();
+		proyectos.get(numero).incrementarCosto(costoTarea);
 	}
 
+	
 	@Override
 	public void registrarRetrasoEnTarea(Integer numero, String titulo, double cantidadDias)
 			throws IllegalArgumentException {		
@@ -132,8 +140,12 @@ public class HomeSolution implements IHomeSolution {
 		
 		Integer empleadoResponsable = proyectos.get(numero).registrarRetrasoTarea(titulo, cantidadDias);
 		empleados.get(empleadoResponsable).añadirRetraso();
+		Empleado emp = empleados.get(empleadoResponsable);
+		double costoExtra = cantidadDias * emp.retornarValor();
+		proyectos.get(numero).incrementarCosto(costoExtra);
 	}
 
+	
 	@Override
 	public void agregarTareaEnProyecto(Integer numero, String titulo, String descripcion, double dias)
 			throws IllegalArgumentException {	
