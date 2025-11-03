@@ -72,8 +72,16 @@ public class Proyecto {
 		estado = Estado.activo;
 	}
 	
-	public Integer registrarRetrasoTarea(String tituloTarea, double diasRetraso) {	
-		return tareas.get(tituloTarea).registrarRetraso(diasRetraso);
+	public Integer registrarRetrasoTarea(String tituloTarea, double diasRetraso) {
+		
+		Integer empleadoResp = tareas.get(tituloTarea).registrarRetraso(diasRetraso);		
+		Integer diferenciaInicioProyectoFinTarea = tareas.get(tituloTarea).retornarRetrasoAgregar(fechaInicio).compareTo(fechaEstimadaFin);
+		
+		if (diferenciaInicioProyectoFinTarea > 0) {
+			fechaEstimadaFin.plusDays(diferenciaInicioProyectoFinTarea);
+		}
+		
+		return empleadoResp;
 	}
 	
 	public void registrarTarea(String tituloTarea, String descripcionTarea,
@@ -90,8 +98,12 @@ public class Proyecto {
 			throw new IllegalArgumentException("Los días necesarios deben ser mayores a 0.");
 		}
 		
-		Tarea t = new Tarea(tituloTarea, descripcionTarea, diasNecesariosTarea);
+		Tarea t = new Tarea(tituloTarea, descripcionTarea, diasNecesariosTarea, LocalDate.now());
 		tareas.put(t.retornarTitulo(), t);
+		
+		if (LocalDate.now().plusDays(Math.round(diasNecesariosTarea)).compareTo(fechaEstimadaFin) > 0) {
+			fechaEstimadaFin.plusDays(LocalDate.now().plusDays(Math.round(diasNecesariosTarea)).compareTo(fechaEstimadaFin));
+		}
 	}
 	
 	public Integer finalizarTarea(String tituloTarea) {

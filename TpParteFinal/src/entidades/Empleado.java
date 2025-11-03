@@ -20,7 +20,9 @@ public abstract class Empleado {
 		retrasos = 0;
 	}
 	
-	public abstract TipoContrato retornarTipoContrato();	
+	//Método abstracto que retorna el tipo de contrato.
+	public abstract TipoContrato retornarTipoContrato();
+	
 	//Ocupa al empleado.
 	public void ocuparEmpleado() {		
 		estaDisponible = false;

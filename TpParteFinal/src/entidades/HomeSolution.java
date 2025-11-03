@@ -409,7 +409,7 @@ public class HomeSolution implements IHomeSolution {
 		
 		for (Empleado e : empleados.values()) {			
 			if (e.retornarDisponibilidad() &&
-					(empleadoMenosRetrasos == null ||
+					((empleadoMenosRetrasos == null || e.retornarRetrasos() == 0) ||
 					(e.retornarRetrasos() < empleadoMenosRetrasos.retornarRetrasos()))) {
 				empleadoMenosRetrasos = e;
 			}
@@ -417,4 +417,5 @@ public class HomeSolution implements IHomeSolution {
 		
 		return empleadoMenosRetrasos;	
 	}
+	
 }

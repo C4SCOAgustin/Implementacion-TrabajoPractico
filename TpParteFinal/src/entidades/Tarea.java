@@ -1,20 +1,24 @@
 package entidades;
 
+import java.time.LocalDate;
+
 public class Tarea {
 	//DATOS-ATRIBUTOS 	
 	private final String titulo; 
 	private String descripcion;
 	private double diasNecesarios;
 	private Integer empleadoResponsable;
-	private double diasRetraso;
+	private double diasRetraso = 0;
 	private boolean finalizada;
+	private LocalDate fechaInicio;
 
 	//MÉTODOS-OPERACIONES
 	//Constructor.
-	public Tarea(String titulo, String descripcion, double diasNecesarios) {		
+	public Tarea(String titulo, String descripcion, double diasNecesarios, LocalDate fechaInicio) {		
 		this.titulo = titulo;
 		this.descripcion = descripcion;
-		this.diasNecesarios = diasNecesarios;	
+		this.diasNecesarios = diasNecesarios;
+		this.fechaInicio = fechaInicio;
 	}
 	
 	//Asigna un número de legajo relacionado a un empleado como responsable de la tarea (void).
@@ -23,7 +27,8 @@ public class Tarea {
 	}
 	
 	//Añade días de retraso a la tarea y retorna al empleadoResponsable (Integer).
-	public Integer registrarRetraso(double añadirRetraso) {	
+	public Integer registrarRetraso(double añadirRetraso) {
+		diasRetraso += añadirRetraso;
 		return empleadoResponsable;
 	}
 	
@@ -50,10 +55,10 @@ public class Tarea {
 	
 	//Retorna los días necesarios para la finalización de la tarea como un decimal (double).
 	public double retornarDiasNecesarios() {
-		return diasNecesarios;
+		return diasNecesarios + diasRetraso;
 	}
 	
-	//Retorna los días de retraso de la tarea como un decimal (double).
+	//retorna los días de retraso de la tarea como decimal (double)
 	public double retornarDiasRetraso() {
 		return diasRetraso;
 	}
@@ -63,7 +68,12 @@ public class Tarea {
 		return finalizada;
 	}
 	
+	public LocalDate retornarRetrasoAgregar(LocalDate fechaProyecto) {
+		return fechaInicio.plusDays(Math.round(diasNecesarios));
+	}
+	
 	public String toString() {
 		return this.titulo;
 	}
+
 }
