@@ -5,9 +5,9 @@ import java.util.HashMap;
 
 public class Cliente {
 	//DATOS-ATRIBUTOS
-	private String nombre;
-	private String email;
-	private String telefono;
+	private final String nombre;
+	private final String email;
+	private final String telefono;
 	
 	//MÉTODOS-OPERACIONES
 	//Constructor.

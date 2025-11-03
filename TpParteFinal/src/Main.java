@@ -1,5 +1,6 @@
 import static org.junit.Assert.assertTrue;
 
+import entidades.Categoria;
 import entidades.Contratado;
 import entidades.Empleado;
 import entidades.Permanente;
@@ -27,6 +28,5 @@ public class Main {
         PanelManager panelManager = new PanelManager(homeSolution);
         
         System.out.println(homeSolution.toString());
- 
     }
 }
