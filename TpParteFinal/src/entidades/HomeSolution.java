@@ -85,7 +85,7 @@ public class HomeSolution implements IHomeSolution {
 
 	@Override
 	public void asignarResponsableEnTarea(Integer numero, String titulo) throws Exception {				
-		if (!proyectos.containsKey(numero) || proyectos.get(numero).estaFinalizado()) {
+		if (!proyectos.containsKey(numero) || proyectos.get(numero).retornarEstado() == Estado.finalizado) {
 			throw new Exception("El proyecto no existe o esta finalizado.");
 		}
 		
@@ -97,18 +97,20 @@ public class HomeSolution implements IHomeSolution {
 			}
 		}
 		
+		proyectos.get(numero).establecerPendiente();
 		throw new Exception("No hay suficientes empleados disponibles");
 	}
 
 	@Override
 	public void asignarResponsableMenosRetraso(Integer numero, String titulo) throws Exception {		
-		if (!proyectos.containsKey(numero) || proyectos.get(numero).estaFinalizado()) {
+		if (!proyectos.containsKey(numero) || proyectos.get(numero).retornarEstado() == Estado.finalizado) {
 			throw new Exception("El proyecto no existe o esta finalizado.");
 		}
 		
 		Empleado mejorEmpleado = obtenerMenosRetrasos();
 		
 		if (mejorEmpleado == null) {
+			proyectos.get(numero).establecerPendiente();
 			throw new Exception("No hay empleados disponibles.");
 		}
 		
@@ -138,7 +140,7 @@ public class HomeSolution implements IHomeSolution {
 			throw new IllegalArgumentException("El proyecto no existe.");
 		}
 		
-		if (proyectos.get(numero).estaFinalizado()) {
+		if (proyectos.get(numero).retornarEstado() == Estado.finalizado) {
 			throw new IllegalArgumentException("El proyecto esta finalizado.");
 		}
 		
@@ -178,7 +180,13 @@ public class HomeSolution implements IHomeSolution {
 			throw new IllegalArgumentException("No existe el proyecto con número: " + numero);
 		}
 		
-		proyecto.finalizarProyecto(fin);		
+		Set<Integer> empleadosADesocupar = proyecto.finalizarProyecto(fin);
+	
+		for (Integer i : empleadosADesocupar) {
+			if (i != null) {
+				empleados.get(i).desocuparEmpleado();
+			}
+		}
 	}
 
 	@Override
@@ -224,8 +232,6 @@ public class HomeSolution implements IHomeSolution {
 	    }
 	    
 	    proyecto.incrementarCosto(diasTotales * empleadoNuevo.retornarValor());
-
-	    System.out.println("Empleado reasignado correctamente en la tarea '" + titulo + "'");
     }
 
 	@Override
@@ -265,10 +271,6 @@ public class HomeSolution implements IHomeSolution {
 		 mejorEmpleado.ocuparEmpleado();
 		 proyecto.reducirCosto(empleadoActual.retornarValor());
 		 proyecto.incrementarCosto(mejorEmpleado.retornarValor());
-
-		 System.out.println("Empleado '" + empleadoActual.retornarNombre() + 
-				 "' fue reemplazado por '" + mejorEmpleado.retornarNombre() +
-				 "' en la tarea '" + titulo + "'.");
 		}
 
 	@Override
@@ -277,13 +279,14 @@ public class HomeSolution implements IHomeSolution {
 		
         return proyecto.calcularCostoProyecto(); // O(1)
 	}
-				
+		
+	//Esta finalizado.
 	@Override
 	public List<Tupla<Integer, String>> proyectosFinalizados() {		
         List<Tupla<Integer, String>> lista = new ArrayList<>();
         
         for (Proyecto proyecto : proyectos.values()) {
-        	if (proyecto.estaFinalizado()) {
+        	if (proyecto.retornarEstado() == Estado.finalizado) {
         		lista.add(new Tupla<>(proyecto.retornarNumeroProyecto(), proyecto.retornarDomicilio()));
         	}
         }
@@ -291,28 +294,33 @@ public class HomeSolution implements IHomeSolution {
         return lista;		
 	}
 
-	
-	//No esta finalizado, tiene tareas pendientes y tiene tareas sin asignar
+	//No esta finalizado, no fue iniciado o quedo alguna tarea pendiente de asignar.
 	@Override
 	public List<Tupla<Integer, String>> proyectosPendientes() {
 		List<Tupla<Integer, String>> pendientes = new ArrayList<>();
 
 	    for (Proyecto p : proyectos.values()) {
-	        if (!p.estaFinalizado() && !p.retornarTareasPendientes().isEmpty() && !p.retornarTareasNoAsignadas().isEmpty()) {
-	        	pendientes.add(new Tupla<>(p.retornarNumeroProyecto(), p.retornarDomicilio()));
-	        }
+//	        if (p.retornarEstado() != Estado.finalizado && !p.retornarTareasPendientes().isEmpty() && !p.retornarTareasNoAsignadas().isEmpty()) {
+//	        	pendientes.add(new Tupla<>(p.retornarNumeroProyecto(), p.retornarDomicilio()));
+//	        }
+	    	if (p.retornarEstado() == Estado.pendiente) {
+	    		pendientes.add(new Tupla<>(p.retornarNumeroProyecto(), p.retornarDomicilio()));
+	    	}
 	    }
 
 	    return pendientes;
 	}
 
-	//No esta finalizado y no tiene tareas sin asignar
+	//No esta finalizado y se asignaron sus tareas sin problemas o tiene todas sus tareas finalizadas.
 	@Override
 	public List<Tupla<Integer, String>> proyectosActivos() {		
 		List<Tupla<Integer, String>> activos = new ArrayList<>();
 		
 		for (Proyecto p : proyectos.values()) {			
-			if (!p.estaFinalizado() && p.retornarTareasNoAsignadas().isEmpty()) {
+//			if (p.retornarEstado() != Estado.finalizado && p.retornarTareasNoAsignadas().isEmpty()) {
+//				activos.add(new Tupla<>(p.retornarNumeroProyecto(), p.retornarDomicilio()));
+//			}
+			if(p.retornarEstado() == Estado.activo) {
 				activos.add(new Tupla<>(p.retornarNumeroProyecto(), p.retornarDomicilio()));
 			}
 		}
@@ -335,7 +343,7 @@ public class HomeSolution implements IHomeSolution {
 
 	@Override
 	public boolean estaFinalizado(Integer numero) {		
-		return proyectos.get(numero).estaFinalizado();
+		return proyectos.get(numero).retornarEstado() == Estado.finalizado;
 	}
 
 	@Override
@@ -355,7 +363,7 @@ public class HomeSolution implements IHomeSolution {
 	}
 
 	@Override
-	public Object[] tareasProyectoNoAsignadas(Integer numero) {	
+	public Object[] tareasProyectoNoAsignadas(Integer numero) {
 		return proyectos.get(numero).retornarTareasNoAsignadas().toArray(new Tarea[0]);
 	}
 

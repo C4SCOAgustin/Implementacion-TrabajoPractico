@@ -11,13 +11,13 @@ import java.util.Set;
 public class Proyecto {	
 	//DATOS-ATRIBUTOS
 	private HashMap<String, Tarea> tareas = new HashMap<>();
-	private String domicilio;
-	private Cliente cliente;
+	private final String domicilio;
+	private final Cliente cliente;
 	private LocalDate fechaInicio, fechaEstimadaFin, fechaRealFin;
 	private static Integer ultimoNumeroProyecto = 0;
-	private Integer numeroProyecto;
+	private final Integer numeroProyecto;
 	private double costoFinal;
-	private boolean finalizado;
+	private String estado = Estado.pendiente;
 
 	//MÉTODOS-OPERACIONES	
 	//CONSTRUCTOR
@@ -69,6 +69,7 @@ public class Proyecto {
 		}
 		
 		tareas.get(tituloTarea).asignarEmpleado(nLegajo);
+		estado = Estado.activo;
 	}
 	
 	public Integer registrarRetrasoTarea(String tituloTarea, double diasRetraso) {	
@@ -106,35 +107,32 @@ public class Proyecto {
 	    return tareas.get(tituloTarea).finalizarTarea();	    
 	}
 		
-	public void finalizarProyecto(String fechaFin) {
-		boolean todasFinalizadas = tareas.values().stream().allMatch(Tarea::retornarFinalizada);
-
-		    if (!todasFinalizadas) {	    	
-		        throw new IllegalArgumentException("No se puede finalizar el proyecto. Todavía hay tareas pendientes.");
-		    }
-		
-//		Set<Tarea> pendientes = retornarTareasPendientes();
-//		
-//		if (pendientes.isEmpty()) {
-//			for (Tarea t : pendientes) {
-//				t.finalizarTarea();
-//				System.out.println("La tarea " + t.toString() + " fue finalizada automaticamente.");
-//			}
-//		}
+	public Set<Integer> finalizarProyecto(String fechaFin) {		
+		Set<Tarea> pendientes = retornarTareasPendientes();
+		Set<Integer> empleadosADesocupar = new HashSet<>();
 		
 		if (fechaRealFin != null) {    	
 			throw new IllegalArgumentException("Proyecto ya finalizado");
 		}
 		    
 		if (fechaFin == null || fechaFin.length() != 10) {	    	
-			throw new IllegalArgumentException("La fecha ingresada debe estar en formato YYYY/MM/DD");
+			throw new IllegalArgumentException("La fecha ingresada debe estar en formato YYYY/MM/DD.");
 		}
-		    
-		finalizado = true;
+		
+		if (fechaInicio.isAfter(LocalDate.parse(fechaFin))) {	    	
+	        throw new IllegalArgumentException("La fecha de fin debe ser posterior a la fecha de inicio.");
+	    }
+		
+		if (!pendientes.isEmpty()) {
+			for (Tarea t : pendientes) {
+				empleadosADesocupar.add(finalizarTarea(t.retornarTitulo()));
+			}
+		}
+		
+		estado  = Estado.finalizado;
 		fechaRealFin = LocalDate.parse(fechaFin);
 		costoFinal = calcularCostoProyecto(); 
-
-		System.out.println("Proyecto #" + numeroProyecto + " finalizado correctamente.");	
+		return empleadosADesocupar;
 	}
 
 	public double calcularCostoProyecto() {	
@@ -163,10 +161,6 @@ public class Proyecto {
 	 
 	 public Tarea retornarTareaPorTitulo(String titulo) {		 
 		    return tareas.get(titulo);
-		}
-
-	 public boolean estaFinalizado() {		 
-		    return finalizado;
 		}
 
 		public String retornarDomicilio() {		
@@ -208,6 +202,10 @@ public class Proyecto {
 	public Set<Tarea> retornarTareasNoAsignadas() {	
     Set<Tarea> noAsignadas = new HashSet<>();
     
+    if (estado == Estado.finalizado) {
+    	throw new IllegalArgumentException("El proyecto " + numeroProyecto + " esta finalizado");
+    }
+    
 	for (Tarea t : tareas.values()) {
 		if (t.retornarEmpleadoResponsable() == null) {
 			noAsignadas.add(t);
@@ -216,4 +214,17 @@ public class Proyecto {
 	
 	return noAsignadas;
 	}
+	
+	public void establecerPendiente() {
+		estado = Estado.pendiente;
+	}
+	
+	public String retornarEstado() {
+		if (retornarTareasPendientes().isEmpty() && estado != Estado.finalizado) {
+			estado = Estado.activo;
+		}
+		
+		return estado;
+	}
+	
 }

@@ -2,7 +2,7 @@ package entidades;
 
 public class Tarea {
 	//DATOS-ATRIBUTOS 	
-	private String titulo; 
+	private final String titulo; 
 	private String descripcion;
 	private double diasNecesarios;
 	private Integer empleadoResponsable;
