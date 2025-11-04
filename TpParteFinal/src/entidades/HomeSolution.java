@@ -194,7 +194,7 @@ public class HomeSolution implements IHomeSolution {
 		}
 		
 		Set<Integer> empleadosADesocupar = proyecto.finalizarProyecto(fin);
-	
+		
 		for (Integer i : empleadosADesocupar) {
 			if (i != null) {
 				empleados.get(i).desocuparEmpleado();

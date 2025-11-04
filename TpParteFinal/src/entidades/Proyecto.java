@@ -143,6 +143,11 @@ public class Proyecto {
 		
 		estado  = Estado.finalizado;
 		fechaRealFin = LocalDate.parse(fechaFin);
+		
+		if (fechaRealFin.isAfter(fechaEstimadaFin)) {
+			retraso = true;
+		}
+		
 		return empleadosADesocupar;
 	}
 
