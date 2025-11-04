@@ -23,10 +23,17 @@ public class Main {
         homeSolution.registrarEmpleado("Luis",80000, "EXPERTO");
         homeSolution.registrarEmpleado("Julieta",15000);
         homeSolution.registrarEmpleado("Carlos", 50000,"INICIAL");
-        homeSolution.registrarProyecto(titulos,descripciones,duracion,"Libertador 500", cliente,"2025-12-10","2025-12-15");
         
+        homeSolution.asignarResponsableEnTarea(1,"Pintar");
+        homeSolution.asignarResponsableEnTarea(1,"Instalacion electrica");
+        homeSolution.asignarResponsableEnTarea(1,"Trabajos jardineria");
+        homeSolution.asignarResponsableEnTarea(1,"Instalar AA");
+        
+//        homeSolution.registrarRetrasoEnTarea(1, "Pintar", 1);
+        
+        
+        System.out.println(homeSolution.costoProyecto(1));
         PanelManager panelManager = new PanelManager(homeSolution);
         
-        System.out.println(homeSolution.toString());
     }
 }

@@ -141,7 +141,7 @@ public class HomeSolution implements IHomeSolution {
 		Integer empleadoResponsable = proyectos.get(numero).registrarRetrasoTarea(titulo, cantidadDias);
 		empleados.get(empleadoResponsable).añadirRetraso();
 		Empleado emp = empleados.get(empleadoResponsable);
-		double costoExtra = emp.calcularCosto(cantidadDias);
+		double costoExtra = emp.calcularCostoConRetraso(cantidadDias);
 		proyectos.get(numero).incrementarCosto(costoExtra);
 	}
 
@@ -238,13 +238,19 @@ public class HomeSolution implements IHomeSolution {
 	    
 	    empleadoNuevo.ocuparEmpleado();
 	    
-	    double diasTotales = tarea.retornarDiasNecesarios() + tarea.retornarDiasRetraso();
+	    double diasTotales = tarea.retornarDiasNecesarios();
 	    
 	    if (empleadoAnterior != null) {
-	    	proyecto.reducirCosto(diasTotales * empleadoAnterior.retornarValor());
+	    	if (tarea.retornarDiasRetraso() <= 0) {
+	    		proyecto.reducirCosto(empleadoAnterior.calcularCosto(diasTotales));
+	    		proyecto.incrementarCosto(empleadoNuevo.calcularCosto(diasTotales));
+	    	}
+	    	
+	    	else {
+	    		proyecto.reducirCosto(empleadoAnterior.calcularCostoConRetraso(diasTotales));
+	    		proyecto.incrementarCosto(empleadoNuevo.calcularCostoConRetraso(diasTotales));
+	    	}
 	    }
-	    
-	    proyecto.incrementarCosto(diasTotales * empleadoNuevo.retornarValor());
     }
 
 	@Override
@@ -287,10 +293,9 @@ public class HomeSolution implements IHomeSolution {
 		}
 
 	@Override
-	public double costoProyecto(Integer numeroProyecto) {		
-		Proyecto proyecto = proyectos.get(numeroProyecto);
+	public double costoProyecto(Integer numeroProyecto) {
 		
-        return proyecto.calcularCostoProyecto(); // O(1)
+		return proyectos.get(numeroProyecto).calcularCostoProyecto();
 	}
 		
 	//Esta finalizado.

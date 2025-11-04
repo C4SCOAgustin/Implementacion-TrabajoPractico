@@ -17,14 +17,17 @@ public class Permanente extends Empleado {
 		return TipoContrato.PERMANENTE;
 	}
 	
-	 @Override
-	    public double calcularCosto(double dias) {
-	        
-	        double diasPagados = Math.ceil(dias);
-	        
-	        return retornarValor() * diasPagados * 1.02;
-	    }
-
+	@Override
+	public double calcularCosto(double dias) {		
+	    double valorFinal = Math.round(dias) * super.retornarValor() * 1.02;
+	    return valorFinal;
+	}
+	
+	@Override
+	public double calcularCostoConRetraso(double dias) {		
+	    double valorFinal = Math.round(dias) * super.retornarValor();
+	    return valorFinal;
+	}
 	
 	//Retorna la categoria del empleado de planta permanente como una cadena (String).
 	public String retornarCategoria() {	

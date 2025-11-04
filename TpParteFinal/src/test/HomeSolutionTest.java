@@ -214,6 +214,8 @@ public class HomeSolutionTest {
         asignarTareas(numeroProyecto);
         homeSolution.finalizarProyecto(numeroProyecto,"2025-12-10");
         assertEquals(calculoCostoConRetraso(), homeSolution.costoProyecto(numeroProyecto), 0.001);
+        //Este test no funciona porque no se establecio el sistema de retraso en base a la fecha de finalización ingresada,
+        //sino al sistema de la operación agregarRetraso.
     }
     @Test
     public void testCalculaCostoSinRetrasosYReasignacion() throws Exception{

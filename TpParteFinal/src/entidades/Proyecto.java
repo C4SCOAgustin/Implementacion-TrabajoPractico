@@ -18,6 +18,7 @@ public class Proyecto {
 	private final Integer numeroProyecto;
 	private double costoFinal;
 	private String estado = Estado.pendiente;
+	private boolean retraso = false;
 
 	//MÉTODOS-OPERACIONES	
 	//CONSTRUCTOR
@@ -35,9 +36,6 @@ public class Proyecto {
 			throw new IllegalArgumentException("El teléfono de cliente ingresado es invalido.");
 		}
 		
-//		if (LocalDate.parse(fechaEstimadaFin).isBefore(LocalDate.now())) {
-//			throw new IllegalArgumentException("La fecha de fin debe ser posterior a la fecha actual.");
-//		}
 		this.fechaInicio = LocalDate.parse(fechaInicio);
 		this.fechaEstimadaFin = LocalDate.parse(fechaEstimadaFin);	
 		
@@ -80,6 +78,8 @@ public class Proyecto {
 		if (diferenciaInicioProyectoFinTarea > 0) {
 			fechaEstimadaFin.plusDays(diferenciaInicioProyectoFinTarea);
 		}
+		
+		retraso = true;
 		
 		return empleadoResp;
 	}
@@ -143,12 +143,16 @@ public class Proyecto {
 		
 		estado  = Estado.finalizado;
 		fechaRealFin = LocalDate.parse(fechaFin);
-		costoFinal = calcularCostoProyecto(); 
 		return empleadosADesocupar;
 	}
 
-	public double calcularCostoProyecto() {	
-		 return costoFinal;
+	public double calcularCostoProyecto() {		
+		if(retraso) {				 
+			 return costoFinal * 1.25;
+		}
+		else {
+			return costoFinal * 1.35; 
+		}
 	}
 	
 	public HashMap<String, Tarea> retornarTareas() {

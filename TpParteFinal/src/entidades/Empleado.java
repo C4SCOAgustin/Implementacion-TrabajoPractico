@@ -25,6 +25,8 @@ public abstract class Empleado {
 	
 	public abstract double calcularCosto(double dias);
 	
+	public abstract double calcularCostoConRetraso(double dias);
+	
 	//Ocupa al empleado.
 	public void ocuparEmpleado() {		
 		estaDisponible = false;
