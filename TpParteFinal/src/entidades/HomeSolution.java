@@ -129,21 +129,24 @@ public class HomeSolution implements IHomeSolution {
 
 	
 	@Override
-	public void registrarRetrasoEnTarea(Integer numero, String titulo, double cantidadDias)
-			throws IllegalArgumentException {		
-		if (!proyectos.containsKey(numero)) {
-			throw new IllegalArgumentException("El proyecto no existe.");
-		}
-		
-		if (cantidadDias <= 0) {
-			throw new IllegalArgumentException("Los días ingresados deben ser mayores a 0.");
-		}
-		
-		Integer empleadoResponsable = proyectos.get(numero).registrarRetrasoTarea(titulo, cantidadDias);
-		empleados.get(empleadoResponsable).añadirRetraso();
-		Empleado emp = empleados.get(empleadoResponsable);
-		double costoExtra = emp.calcularCostoConRetraso(cantidadDias);
-		proyectos.get(numero).incrementarCosto(costoExtra);
+	public void registrarRetrasoEnTarea(Integer numero, String titulo, double cantidadDias) throws IllegalArgumentException {        
+	    Proyecto proyecto = proyectos.get(numero);
+	    if (proyecto == null) {
+	        throw new IllegalArgumentException("El proyecto no existe.");
+	    }
+	    
+	    if (cantidadDias <= 0) {
+	        throw new IllegalArgumentException("Los días ingresados deben ser mayores a 0.");
+	    }
+
+	    // Le pedimos al proyecto que registre el retraso y nos devuelva el legajo del empleado responsable
+	    Integer legajoEmpleado = proyecto.registrarRetrasoEnTarea(titulo, cantidadDias);
+
+	    
+	    Empleado empleado = empleados.get(legajoEmpleado);
+	    empleado.añadirRetraso();
+	    double costoExtra = empleado.calcularCostoConRetraso(cantidadDias);
+	    proyecto.incrementarCosto(costoExtra);
 	}
 
 	

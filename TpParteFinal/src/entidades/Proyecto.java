@@ -81,18 +81,16 @@ public class Proyecto {
 	    }
 	}
 	
-	public Integer registrarRetrasoTarea(String tituloTarea, double diasRetraso) {
-		
-		Integer empleadoResp = tareas.get(tituloTarea).registrarRetraso(diasRetraso);		
-		Integer diferenciaInicioProyectoFinTarea = tareas.get(tituloTarea).retornarRetrasoAgregar(fechaInicio).compareTo(fechaEstimadaFin);
-		
-		if (diferenciaInicioProyectoFinTarea > 0) {
-			fechaEstimadaFin.plusDays(diferenciaInicioProyectoFinTarea);
-		}
-		
-		retraso = true;
-		
-		return empleadoResp;
+	public Integer registrarRetrasoEnTarea(String tituloTarea, double cantidadDias) {
+	    Tarea tarea = retornarTareaPorTitulo(tituloTarea);
+	    if (tarea == null) {
+	        throw new IllegalArgumentException("No existe la tarea con título: " + tituloTarea);
+	    }
+
+	    // Devuelve el legajo del empleado responsable
+	    Integer legajoResponsable = tarea.retornarEmpleadoResponsable();
+	    tarea.registrarRetraso(cantidadDias);
+	    return legajoResponsable;
 	}
 	
 	
