@@ -84,25 +84,23 @@ public class HomeSolution implements IHomeSolution {
 		proyectos.put(p.retornarNumeroProyecto(), p);
 	}
 
-	@Override
-	public void asignarResponsableEnTarea(Integer numero, String titulo) throws Exception {				
-		if (!proyectos.containsKey(numero) || proyectos.get(numero).retornarEstado() == Estado.finalizado) {
-			throw new Exception("El proyecto no existe o esta finalizado.");
-		}
-		
-		for (Empleado e: empleados.values()) {		
-			if (e.retornarDisponibilidad()) {		
-				proyectos.get(numero).asignarEmpleadoATarea(titulo, e.retornarLegajo());
-				e.ocuparEmpleado();
-				Tarea tarea = proyectos.get(numero).retornarTareaPorTitulo(titulo);
-				double costoTarea = e.calcularCosto(tarea.retornarDiasNecesarios());
-				proyectos.get(numero).incrementarCosto(costoTarea);
-				return;
-			}
-		}
-		
-		proyectos.get(numero).establecerPendiente();
-		throw new Exception("No hay suficientes empleados disponibles");
+	
+	public void asignarResponsableEnTarea(Integer numeroProyecto, String tituloTarea) throws Exception {				
+	    Proyecto proyecto = proyectos.get(numeroProyecto);
+	    if (proyecto == null || proyecto.retornarEstado() == Estado.finalizado) {
+	        throw new Exception("El proyecto no existe o está finalizado.");
+	    }
+
+	    for (Empleado e: empleados.values()) {		
+	        if (e.retornarDisponibilidad()) {
+	            proyecto.asignarEmpleadoDisponibleATarea(tituloTarea, e);
+	            e.ocuparEmpleado();
+	            return;
+	        }
+	    }
+
+	    proyecto.establecerPendiente();
+	    throw new Exception("No hay suficientes empleados disponibles");
 	}
 
 

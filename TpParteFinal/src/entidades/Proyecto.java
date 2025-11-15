@@ -53,21 +53,32 @@ public class Proyecto {
 		numeroProyecto = ultimoNumeroProyecto;	
 	}
 	
-	public void asignarEmpleadoATarea(String tituloTarea, Integer nLegajo) throws Exception {
-		if (!tareas.containsKey(tituloTarea)) {
-			throw new Exception("La tarea no existe.");
-		}
-		
-		if (tareas.get(tituloTarea).retornarFinalizada()) {
-			throw new Exception("La tarea esta finalizada.");
-		}
-		
-		if (tareas.get(tituloTarea).retornarEmpleadoResponsable() != null) {
-			throw new Exception("La tarea ya tiene un empleado asignado.");
-		}
-		
-		tareas.get(tituloTarea).asignarEmpleado(nLegajo);
-		estado = Estado.activo;
+	public void asignarEmpleadoDisponibleATarea(String tituloTarea, Empleado empleado) throws Exception {
+	    Tarea tarea = retornarTareaPorTitulo(tituloTarea);
+	    if (tarea == null) {
+	        throw new IllegalArgumentException("No existe la tarea con título: " + tituloTarea);
+	    }
+
+	    if (tarea.retornarFinalizada()) {
+	        throw new Exception("La tarea está finalizada.");
+	    }
+
+	    if (tarea.retornarEmpleadoResponsable() != null) {
+	        throw new Exception("La tarea ya tiene un empleado asignado.");
+	    }
+
+	    // Asignación
+	    tarea.asignarEmpleado(empleado.retornarLegajo());
+
+	    // Ajuste de costo del proyecto
+	    double diasNecesarios = tarea.retornarDiasNecesarios();
+	    double costoTarea = empleado.calcularCosto(diasNecesarios);
+	    incrementarCosto(costoTarea);
+
+	    // Si el proyecto estaba pendiente, lo activamos
+	    if (Estado.pendiente.equals(this.estado)) {
+	        this.estado = Estado.activo;
+	    }
 	}
 	
 	public Integer registrarRetrasoTarea(String tituloTarea, double diasRetraso) {
@@ -114,6 +125,9 @@ public class Proyecto {
 
 	    return costoNuevo - costoAnterior;
 	}
+	
+	
+
 	
 	// Devuelve el legajo del empleado asignado a la tarea, o null si no hay ninguno
 	public Integer obtenerLegajoEmpleadoTarea(String tituloTarea) {
