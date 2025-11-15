@@ -203,55 +203,26 @@ public class HomeSolution implements IHomeSolution {
 	}
 
 	@Override
-	public void reasignarEmpleadoEnProyecto(Integer numero, Integer legajo, String titulo) throws Exception {
-		Proyecto proyecto = proyectos.get(numero);
-	    
-	    if (proyecto == null) {
+	public void reasignarEmpleadoEnProyecto(Integer numero, Integer legajoNuevo, String titulo) throws Exception {
+	    Proyecto proyecto = proyectos.get(numero);
+	    if (proyecto == null) 
 	        throw new IllegalArgumentException("No existe el proyecto con número: " + numero);
-	    }
-	    
-	    Tarea tarea = proyecto.retornarTareas().get(titulo);
-	    
-	    if (tarea == null) {
-	        throw new IllegalArgumentException("No existe la tarea con título: " + titulo);
-	    }
-	    
-	    Integer legajoAnterior = tarea.retornarEmpleadoResponsable();
-	    
-	    if (legajoAnterior == 0) {
-	        throw new Exception("La tarea no tiene empleado asignado previamente.");
-	    }
-	    
-	    Empleado empleadoNuevo = empleados.get(legajo);
-	    
-	    if (empleadoNuevo == null) {
-	        throw new IllegalArgumentException("El empleado reemplazante no existe: " + legajo);
-	    }
-	    
-	    tarea.asignarEmpleado(legajo);
-	    
-	    Empleado empleadoAnterior = empleados.get(legajoAnterior);
-	    
-	    if (empleadoAnterior != null) {
-	    	empleadoAnterior.desocuparEmpleado();
-	    }
-	    
-	    empleadoNuevo.ocuparEmpleado();
-	    
-	    double diasTotales = tarea.retornarDiasNecesarios();
-	    
-	    if (empleadoAnterior != null) {
-	    	if (tarea.retornarDiasRetraso() <= 0) {
-	    		proyecto.reducirCosto(empleadoAnterior.calcularCosto(diasTotales));
-	    		proyecto.incrementarCosto(empleadoNuevo.calcularCosto(diasTotales));
-	    	}
-	    	
-	    	else {
-	    		proyecto.reducirCosto(empleadoAnterior.calcularCostoConRetraso(diasTotales));
-	    		proyecto.incrementarCosto(empleadoNuevo.calcularCostoConRetraso(diasTotales));
-	    	}
-	    }
-    }
+
+	    Empleado nuevoEmpleado = empleados.get(legajoNuevo);
+	    if (nuevoEmpleado == null) 
+	        throw new IllegalArgumentException("El empleado reemplazante no existe: " + legajoNuevo);
+
+	    // Pedimos a Proyecto que haga todo y nos devuelva el ajuste de costo
+	    Empleado empleadoAnterior = empleados.get(proyecto.obtenerLegajoEmpleadoTarea(titulo));
+	    double ajusteCosto = proyecto.reasignarEmpleadoYCalcularCosto(titulo, nuevoEmpleado, empleadoAnterior);
+
+	    // Actualizamos disponibilidad
+	    if (empleadoAnterior != null) empleadoAnterior.desocuparEmpleado();
+	    nuevoEmpleado.ocuparEmpleado();
+
+	    // Ajustamos costo
+	    proyecto.incrementarCosto(ajusteCosto);
+	}
 
 	@Override
 	public void reasignarEmpleadoConMenosRetraso(Integer numero, String titulo) throws Exception {		

@@ -84,6 +84,46 @@ public class Proyecto {
 		return empleadoResp;
 	}
 	
+	
+	// Devuelve cuánto ajustar el costo al reasignar un empleado
+	public double reasignarEmpleadoYCalcularCosto(String tituloTarea, Empleado nuevoEmpleado, Empleado empleadoAnterior) throws Exception {
+	    Tarea tarea = retornarTareaPorTitulo(tituloTarea); // Proyecto sí conoce Tarea
+	    if (tarea == null) 
+	        throw new IllegalArgumentException("No existe la tarea con título: " + tituloTarea);
+
+	    Integer legajoAnterior = tarea.retornarEmpleadoResponsable();
+	    if (legajoAnterior == null)
+	        throw new Exception("La tarea no tiene empleado asignado previamente.");
+
+	    tarea.asignarEmpleado(nuevoEmpleado.retornarLegajo());
+
+	    double diasTotales = tarea.retornarDiasNecesarios();
+	    double costoAnterior = 0;
+	    if (empleadoAnterior != null) {
+	        if (tarea.retornarDiasRetraso() > 0)
+	            costoAnterior = empleadoAnterior.calcularCostoConRetraso(diasTotales);
+	        else
+	            costoAnterior = empleadoAnterior.calcularCosto(diasTotales);
+	    }
+
+	    double costoNuevo;
+	    if (tarea.retornarDiasRetraso() > 0)
+	        costoNuevo = nuevoEmpleado.calcularCostoConRetraso(diasTotales);
+	    else
+	        costoNuevo = nuevoEmpleado.calcularCosto(diasTotales);
+
+	    return costoNuevo - costoAnterior;
+	}
+	
+	// Devuelve el legajo del empleado asignado a la tarea, o null si no hay ninguno
+	public Integer obtenerLegajoEmpleadoTarea(String tituloTarea) {
+	    Tarea tarea = retornarTareaPorTitulo(tituloTarea); // Proyecto sí conoce Tarea
+	    if (tarea == null) {
+	        throw new IllegalArgumentException("No existe la tarea con título: " + tituloTarea);
+	    }
+	    return tarea.retornarEmpleadoResponsable();
+	}
+	
 	public void registrarTarea(String tituloTarea, String descripcionTarea,
 			double diasNecesariosTarea) {	
 		if (tituloTarea == null || tituloTarea.equals("")) {
