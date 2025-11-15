@@ -106,22 +106,25 @@ public class HomeSolution implements IHomeSolution {
 
 	@Override
 	public void asignarResponsableMenosRetraso(Integer numero, String titulo) throws Exception {		
-		if (!proyectos.containsKey(numero) || proyectos.get(numero).retornarEstado() == Estado.finalizado) {
-			throw new Exception("El proyecto no existe o esta finalizado.");
-		}
-		
-		Empleado mejorEmpleado = obtenerMenosRetrasos();
-		
-		if (mejorEmpleado == null) {
-			proyectos.get(numero).establecerPendiente();
-			throw new Exception("No hay empleados disponibles.");
-		}
-		
-		proyectos.get(numero).asignarEmpleadoATarea(titulo, mejorEmpleado.retornarLegajo());
-		mejorEmpleado.ocuparEmpleado();
-		Tarea tarea = proyectos.get(numero).retornarTareaPorTitulo(titulo);
-		double costoTarea = mejorEmpleado.calcularCosto(tarea.retornarDiasNecesarios());
-		proyectos.get(numero).incrementarCosto(costoTarea);
+	    Proyecto proyecto = proyectos.get(numero);
+
+	    if (proyecto == null || proyecto.retornarEstado() == Estado.finalizado) {
+	        throw new Exception("El proyecto no existe o está finalizado.");
+	    }
+
+	    // Elegimos el empleado con menos retrasos
+	    Empleado mejorEmpleado = obtenerMenosRetrasos();
+
+	    if (mejorEmpleado == null) {
+	        proyecto.establecerPendiente();
+	        throw new Exception("No hay empleados disponibles.");
+	    }
+
+	    // nuevo método (bajo acoplamiento)
+	    proyecto.asignarEmpleadoDisponibleATarea(titulo, mejorEmpleado);
+
+	    // Ocupamos al empleado
+	    mejorEmpleado.ocuparEmpleado();
 	}
 
 	
