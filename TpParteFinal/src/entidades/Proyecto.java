@@ -125,6 +125,35 @@ public class Proyecto {
 	}
 	
 	
+	public Integer reasignarEmpleadoConMenosRetraso(String tituloTarea, Empleado nuevoEmpleado) throws Exception {
+	    // Obtengo la tarea
+	    Tarea tarea = retornarTareaPorTitulo(tituloTarea);
+	    if (tarea == null) {
+	        throw new IllegalArgumentException("No existe la tarea con título: " + tituloTarea);
+	    }
+
+	    // Obtengo el legajo del empleado actualmente asignado
+	    Integer legajoAnterior = tarea.retornarEmpleadoResponsable();
+	    if (legajoAnterior == null) {
+	        throw new Exception("La tarea no tiene un empleado asignado actualmente.");
+	    }
+
+	    // Asigno el nuevo empleado
+	    tarea.asignarEmpleado(nuevoEmpleado.retornarLegajo());
+
+	    // calculo costo 
+	    double diasTotales = tarea.retornarDiasNecesarios();
+	    double costoNuevo = tarea.retornarDiasRetraso() > 0 ?
+	                        nuevoEmpleado.calcularCostoConRetraso(diasTotales) :
+	                        nuevoEmpleado.calcularCosto(diasTotales);
+
+	    incrementarCosto(costoNuevo);
+
+	    // Devuelvo el legajo anterior para que HomeSolution lo desocupe
+	    return legajoAnterior;
+	}
+	
+	
 
 	
 	// Devuelve el legajo del empleado asignado a la tarea, o null si no hay ninguno

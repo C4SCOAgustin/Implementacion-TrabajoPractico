@@ -229,43 +229,32 @@ public class HomeSolution implements IHomeSolution {
 	}
 
 	@Override
-	public void reasignarEmpleadoConMenosRetraso(Integer numero, String titulo) throws Exception {		
-		 Proyecto proyecto = proyectos.get(numero);
-		 
-		 if (proyecto == null) {
-			 throw new IllegalArgumentException("No existe el proyecto con número: " + numero);
-		 }
-		 
-		 Tarea tarea = proyecto.retornarTareaPorTitulo(titulo);
-		    
-		 if (tarea == null) {
-			 throw new IllegalArgumentException("No existe la tarea con título: " + titulo);
-		 }
-		 
-		 Integer legajoActual = tarea.retornarEmpleadoResponsable();
-		 
-		 if (legajoActual == 0) {
-			 throw new Exception("La tarea no tiene un empleado asignado actualmente.");
-		 }
+	public void reasignarEmpleadoConMenosRetraso(Integer numero, String titulo) throws Exception {        
+	    Proyecto proyecto = proyectos.get(numero);
+	    if (proyecto == null) {
+	        throw new IllegalArgumentException("No existe el proyecto con número: " + numero);
+	    }
 
-		 Empleado empleadoActual = empleados.get(legajoActual);
-		 
-		 if (empleadoActual == null) {
-		        throw new Exception("El empleado actual asignado a la tarea no existe en el sistema.");
-		 }
-		 
-		 Empleado mejorEmpleado = obtenerMenosRetrasos();
-		 
-		 if (mejorEmpleado == null) {
-			 throw new Exception("No hay empleados disponibles para reasignar.");
-		 }
-		 
-		 empleadoActual.desocuparEmpleado();	    
-		 tarea.asignarEmpleado(mejorEmpleado.retornarLegajo());
-		 mejorEmpleado.ocuparEmpleado();
-		 proyecto.reducirCosto(empleadoActual.retornarValor());
-		 proyecto.incrementarCosto(mejorEmpleado.retornarValor());
-		}
+	    // Obtenemos el empleado con menos retrasos
+	    Empleado mejorEmpleado = obtenerMenosRetrasos();
+	    if (mejorEmpleado == null) {
+	        throw new Exception("No hay empleados disponibles para reasignar.");
+	    }
+
+	    // Delegamos a Proyecto la reasignación y nos devuelve el legajo del empleado anterior
+	    Integer legajoAnterior = proyecto.reasignarEmpleadoConMenosRetraso(titulo, mejorEmpleado);
+
+	    // Solo HomeSolution se encarga de actualizar el estado de los empleados
+	    if (legajoAnterior != null) {
+	        Empleado empleadoAnterior = empleados.get(legajoAnterior);
+	        if (empleadoAnterior != null) {
+	            empleadoAnterior.desocuparEmpleado();
+	        }
+	    }
+	    mejorEmpleado.ocuparEmpleado();
+	}
+	
+	
 
 	@Override
 	public double costoProyecto(Integer numeroProyecto) {
