@@ -6,13 +6,13 @@ public class Contratado extends Empleado {
 	//MÉTODOS-OPERACIONES
 	//Constructor
 	public Contratado(String nombre, double valor) {	
-		super(nombre, valor);
+		super(nombre, valor, "CONTRATADO");
 	}
 	
 	//Retorna el tipo de contrato del empleado (CONTRATADO) como un enum cadena (String)
 	@Override
-	public TipoContrato retornarTipoContrato() {		
-		return TipoContrato.CONTRATADO;
+	public String retornarTipoContrato() {		
+		return super.retornarTipoContrato();
 	}
 	
 	@Override

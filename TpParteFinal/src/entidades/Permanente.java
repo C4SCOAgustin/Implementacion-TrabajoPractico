@@ -7,14 +7,14 @@ public class Permanente extends Empleado {
 	//MÉTODOS-OPERACIONES	
 	//Constructor
 	public Permanente(String nombre, double valor, String categoria) {	
-		super(nombre, valor);	
+		super(nombre, valor, "PERMANENTE");	
 		this.categoria = categoria;
 	}
 	
 	//Retorna el tipo de contrato del empleado (PERMANENTE) como un enum cadena (String)
 	@Override
-	public TipoContrato retornarTipoContrato() {		
-		return TipoContrato.PERMANENTE;
+	public String retornarTipoContrato() {	
+		return super.retornarTipoContrato();
 	}
 	
 	@Override

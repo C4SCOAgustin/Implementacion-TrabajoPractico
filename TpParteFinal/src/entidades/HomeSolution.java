@@ -37,7 +37,7 @@ public class HomeSolution implements IHomeSolution {
 			throw new IllegalArgumentException("El valor ingresado es invalidos.");
 		}
 		
-		if (!Categoria.contains(categoria)) {
+		if (!categoriaEsValida(categoria)) {
 			throw new IllegalArgumentException("La categoria ingresada es invalida.");
 		}
 		
@@ -384,22 +384,6 @@ public class HomeSolution implements IHomeSolution {
 		return proyectos.get(numero).toString();
 	}
 	
-	//Método auxiliar que devuelve al empleado disponible con menos retrasos.
-	//En caso de no haber ningun empleado disponible devuelve null.
-	private Empleado obtenerMenosRetrasos() {	
-		Empleado empleadoMenosRetrasos = null;
-		
-		for (Empleado e : empleados.values()) {			
-			if (e.retornarDisponibilidad() &&
-					((empleadoMenosRetrasos == null || e.retornarRetrasos() == 0) ||
-					(e.retornarRetrasos() < empleadoMenosRetrasos.retornarRetrasos()))) {
-				empleadoMenosRetrasos = e;
-			}
-		}
-		
-		return empleadoMenosRetrasos;	
-	}
-	
 	@Override
 	public String toString() {
 		StringBuilder cadena = new StringBuilder();
@@ -465,4 +449,30 @@ public class HomeSolution implements IHomeSolution {
 		cadena.delete(cadena.length() - 2, cadena.length());
 		return cadena.toString();
 	}
+	
+	//Método auxiliar que devuelve al empleado disponible con menos retrasos.
+	//En caso de no haber ningun empleado disponible devuelve null.
+	private Empleado obtenerMenosRetrasos() {	
+		Empleado empleadoMenosRetrasos = null;
+		
+		for (Empleado e : empleados.values()) {			
+			if (e.retornarDisponibilidad() &&
+					((empleadoMenosRetrasos == null || e.retornarRetrasos() == 0) ||
+					(e.retornarRetrasos() < empleadoMenosRetrasos.retornarRetrasos()))) {
+				empleadoMenosRetrasos = e;
+			}
+		}
+		
+		return empleadoMenosRetrasos;	
+	}
+	
+	private boolean categoriaEsValida(String categoria) {
+		if (categoria == null || categoria.equals("")) {
+			return false;
+		}
+		
+		categoria = categoria.toUpperCase();
+		return categoria.equals("INICIAL") || categoria.equals("TECNICO") || categoria.equals("EXPERTO");
+	}
+	
 }

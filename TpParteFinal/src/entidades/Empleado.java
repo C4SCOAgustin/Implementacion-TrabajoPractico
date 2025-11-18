@@ -4,6 +4,7 @@ public abstract class Empleado {
 	//DATOS-ATRIBUTOS
 	private final String nombre;
 	private final double valor;
+	private String tipoContrato;
 	private static int ultimoNumeroLegajo = 0;
 	private final int numeroLegajo;
 	private boolean estaDisponible;
@@ -11,9 +12,10 @@ public abstract class Empleado {
 	
 	//MÉTODOS-OPERACIONES	
 	//Constructor.
-	public Empleado(String nombre, double valor) {	
+	public Empleado(String nombre, double valor, String tipoContrato) {	
 		this.nombre = nombre;
 		this.valor = valor;
+		this.tipoContrato = tipoContrato;
 		ultimoNumeroLegajo ++;
 		numeroLegajo = ultimoNumeroLegajo;
 		estaDisponible = true;
@@ -21,7 +23,9 @@ public abstract class Empleado {
 	}
 	
 	//Método abstracto que retorna el tipo de contrato.
-	public abstract TipoContrato retornarTipoContrato();
+	public String retornarTipoContrato() {
+		return tipoContrato;
+	}
 	
 	public abstract double calcularCosto(double dias);
 	

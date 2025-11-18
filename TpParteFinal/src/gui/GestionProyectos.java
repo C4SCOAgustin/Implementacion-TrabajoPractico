@@ -350,5 +350,8 @@ public class GestionProyectos extends  JPanel{
             reasignarEmpleadoEficiente.setEnabled(false);
             establecerComoFinalizada.setEnabled(false);
         }
+
     }
+
+
 }
