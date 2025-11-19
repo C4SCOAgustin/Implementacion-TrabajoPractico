@@ -1,11 +1,8 @@
 package entidades;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Proyecto {	
@@ -23,32 +20,28 @@ public class Proyecto {
 	//MÉTODOS-OPERACIONES	
 	//CONSTRUCTOR
 	public Proyecto(String[] titulos, String[] descripciones, double[] dias, String domicilio,
-			String[] datosCliente, String fechaInicio, String fechaEstimadaFin) throws IllegalArgumentException {	
-		if (datosCliente[0] == null || datosCliente[0].equals("")) {
-			throw new IllegalArgumentException("El nombre de cliente ingresado es invalido.");
+			String[] datosCliente, String fechaInicio, String fechaEstimadaFin) throws IllegalArgumentException {
+		if (domicilio == null || domicilio.equals("")) {
+			throw new IllegalArgumentException("El domicilio no puede ser vacio");
 		}
 		
-		if (datosCliente[1] == null || datosCliente[1].equals("")) {
-			throw new IllegalArgumentException("El email de cliente ingresado es invalido.");
+		if (fechaInicio == null ) {
+			throw new IllegalArgumentException("La fecha de inicio no puede ser vacia");
 		}
 		
-		if (datosCliente[2] == null || datosCliente[2].equals("")) {
-			throw new IllegalArgumentException("El teléfono de cliente ingresado es invalido.");
+		if (fechaEstimadaFin == null ) {
+			throw new IllegalArgumentException("La fecha estimada de fin no puede ser vacia");
 		}
-		
-		this.fechaInicio = LocalDate.parse(fechaInicio);
-		this.fechaEstimadaFin = LocalDate.parse(fechaEstimadaFin);	
 		
 		if (LocalDate.parse(fechaInicio).isAfter(LocalDate.parse(fechaEstimadaFin))) {
 			throw new IllegalArgumentException("La fecha de fin debe ser posterior a la fecha de inicio.");
 		}
 		
-		for (int i = 0; i < titulos.length; i++) {		
-			registrarTarea(titulos[i], descripciones[i], dias[i]);
-		}
-	
-		this.domicilio = domicilio;		
-		cliente = new Cliente(datosCliente[0], datosCliente[1], datosCliente[2]);			
+		registrarTareas(titulos, descripciones, dias);
+		this.domicilio = domicilio;	
+		cliente = new Cliente(datosCliente);
+		this.fechaInicio = LocalDate.parse(fechaInicio);
+		this.fechaEstimadaFin = LocalDate.parse(fechaEstimadaFin);						
 		ultimoNumeroProyecto ++;
 		numeroProyecto = ultimoNumeroProyecto;	
 	}
@@ -67,10 +60,10 @@ public class Proyecto {
 	        throw new Exception("La tarea ya tiene un empleado asignado.");
 	    }
 
-	    // Asignación
+	    //Asignación
 	    tarea.asignarEmpleado(empleado.retornarLegajo());
 
-	    // Ajuste de costo del proyecto
+	    //Ajuste de costo del proyecto
 	    double diasNecesarios = tarea.retornarDiasNecesarios();
 	    double costoTarea = empleado.calcularCosto(diasNecesarios);
 	    incrementarCosto(costoTarea);
@@ -179,18 +172,25 @@ public class Proyecto {
 			throw new IllegalArgumentException("Los días necesarios deben ser mayores a 0.");
 		}
 		
-		Tarea t = new Tarea(tituloTarea, descripcionTarea, diasNecesariosTarea, LocalDate.now());
+		Tarea t = new Tarea(tituloTarea, descripcionTarea, diasNecesariosTarea);
 		tareas.put(t.retornarTitulo(), t);
 		
-		if (LocalDate.now().plusDays(Math.round(diasNecesariosTarea)).compareTo(fechaEstimadaFin) > 0) {
-			fechaEstimadaFin.plusDays(LocalDate.now().plusDays(Math.round(diasNecesariosTarea)).compareTo(fechaEstimadaFin));
+//		if (LocalDate.now().plusDays(Math.round(diasNecesariosTarea)).compareTo(fechaEstimadaFin) > 0) {
+//			fechaEstimadaFin.plusDays(LocalDate.now().plusDays(Math.round(diasNecesariosTarea)).compareTo(fechaEstimadaFin));
+//		}
+	}
+	
+	public void registrarTareas(String[] tituloTarea, String[] descripcionTarea,
+			double[] diasNecesariosTarea) {
+		for (int i = 0; i < tituloTarea.length; i++) {
+			registrarTarea(tituloTarea[i], descripcionTarea[i], diasNecesariosTarea[i]);
 		}
 	}
 	
 	public Integer finalizarTarea(String tituloTarea) {
 		
 		if (tituloTarea == null || tituloTarea.equals("")) {
-	        throw new IllegalArgumentException("El titulo ingresado no puede ser nula");
+	        throw new IllegalArgumentException("El título ingresado no puede ser nulo.");
 		}
 		
 	    if (!tareas.containsKey(tituloTarea)) {

@@ -1,7 +1,5 @@
 package entidades;
 
-import java.time.LocalDate;
-
 public class Tarea {
 	//DATOS-ATRIBUTOS 	
 	private final String titulo; 
@@ -10,15 +8,25 @@ public class Tarea {
 	private Integer empleadoResponsable;
 	private double diasRetraso = 0;
 	private boolean finalizada;
-	private LocalDate fechaInicio;
 
 	//MÉTODOS-OPERACIONES
 	//Constructor.
-	public Tarea(String titulo, String descripcion, double diasNecesarios, LocalDate fechaInicio) {		
+	public Tarea(String titulo, String descripcion, double diasNecesarios) {
+		if (titulo == null || titulo == "") {
+			throw new IllegalArgumentException("El título de la tarea no puede ser vacio.");
+		}
+		
+//		if (descripcion == null || descripcion == "") {
+//			throw new IllegalArgumentException("La descripción de la tarea no puede ser vacia.");
+//		}
+		
+		if (diasNecesarios <= 0) {
+			throw new IllegalArgumentException("Los días necesarios la tarea no pueden menores o iguales a 0.");
+		}
+		
 		this.titulo = titulo;
 		this.descripcion = descripcion;
 		this.diasNecesarios = diasNecesarios;
-		this.fechaInicio = fechaInicio;
 	}
 	
 	//Asigna un número de legajo relacionado a un empleado como responsable de la tarea (void).
@@ -66,10 +74,6 @@ public class Tarea {
 	//Retorna el estado de la tarea en verdadero si está terminada o falso si no lo está (boolean).
 	public boolean retornarFinalizada() {		
 		return finalizada;
-	}
-	
-	public LocalDate retornarRetrasoAgregar(LocalDate fechaProyecto) {
-		return fechaInicio.plusDays(Math.round(diasNecesarios));
 	}
 	
 	public String toString() {
