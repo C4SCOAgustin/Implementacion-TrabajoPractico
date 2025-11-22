@@ -68,7 +68,7 @@ public class Proyecto {
 	    
 	    if (t.retornarDiaInicioActividad() != null) {
 		    if (t.retornarDiaInicioActividad().plusDays(diasTarea).isAfter(fechaEstimadaFin)) {
-		    	fechaEstimadaFin = t.retornarDiaInicioActividad().now().plusDays(diasTarea);    	
+		    	fechaEstimadaFin = t.retornarDiaInicioActividad().plusDays(diasTarea);    	
 		    }
 	    }
 
@@ -94,7 +94,7 @@ public class Proyecto {
 	    
 	    if (t.retornarDiaInicioActividad() != null) {
 		    if (t.retornarDiaInicioActividad().plusDays(diasTarea).isAfter(fechaEstimadaFin)) {
-		    	fechaEstimadaFin = t.retornarDiaInicioActividad().now().plusDays(diasTarea);    	
+		    	fechaEstimadaFin = t.retornarDiaInicioActividad().plusDays(diasTarea);    	
 		    }
 	    }
 	    
@@ -188,10 +188,14 @@ public class Proyecto {
 	        throw new IllegalArgumentException("La fecha de fin debe ser posterior a la fecha de inicio.");
 	    }
 		
-//		if (!fechaEstimadaFin.isEqual(LocalDate.parse(fechaFin))) {   	
-//	        throw new IllegalArgumentException("La fecha de fin no coincide con la fecha estimada de fin");
-//	    }
-//		
+		if (LocalDate.parse(fechaFin).isBefore(fechaEstimadaFin)) {   	
+	        throw new IllegalArgumentException("La fecha de finalización no puede ser anterior a la fecha estimada de fin");
+	    }
+		
+		if (LocalDate.parse(fechaFin).isAfter(fechaEstimadaFin)) {   	
+	        retraso = true;
+	    }
+		
 		Set<Tarea> pendientes = retornarTareasPendientes();
 		Set<Integer> empleadosADesocupar = new HashSet<>();
 		
