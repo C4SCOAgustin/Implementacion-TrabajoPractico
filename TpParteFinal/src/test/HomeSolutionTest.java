@@ -24,7 +24,7 @@ public class HomeSolutionTest {
         String descripciones[]={"","","",""};
         double duracion[]={4,2,1,.5};
         String cliente[]={"Pedro Gomez", "mail@mail.com", "123456"};
-        homeSolution.registrarProyecto(titulos,descripciones,duracion,"San Martin 1000",cliente,"2025-12-01","2025-12-05");
+        homeSolution.registrarProyecto(titulos,descripciones,duracion,"San Martin 1000",cliente,"2025-11-15","2025-11-15");
         homeSolution.registrarEmpleado("Juan",15000);
         homeSolution.registrarEmpleado("Luis",80000, "EXPERTO");
         homeSolution.registrarEmpleado("Julieta",15000);
@@ -148,7 +148,7 @@ public class HomeSolutionTest {
         homeSolution.registrarRetrasoEnTarea(numeroProyecto,"Instalacion electrica",2);
         homeSolution.registrarRetrasoEnTarea(numeroProyecto,"Instalar AA",4);
         homeSolution.registrarRetrasoEnTarea(numeroProyecto,"Trabajos jardineria",1);
-        homeSolution.finalizarProyecto(numeroProyecto,"2025-12-10");
+        homeSolution.finalizarProyecto(numeroProyecto,"2025-11-27");
         numeroProyecto = (homeSolution.proyectosPendientes().get(0)).getValor1();
         homeSolution.asignarResponsableMenosRetraso(numeroProyecto,"Pintar");
         Object[] empleadosDisponibles=homeSolution.empleadosNoAsignados();

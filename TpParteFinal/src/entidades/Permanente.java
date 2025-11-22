@@ -7,7 +7,12 @@ public class Permanente extends Empleado {
 	//MÉTODOS-OPERACIONES	
 	//Constructor
 	public Permanente(String nombre, double valor, String categoria) {	
-		super(nombre, valor, "PERMANENTE");	
+		super(nombre, valor, "PERMANENTE");
+		
+		if (!(categoria.equalsIgnoreCase("INICIAL") || categoria.equalsIgnoreCase("TECNICO") || categoria.equalsIgnoreCase("EXPERTO"))) {			
+			throw new IllegalArgumentException("la categoria del empleado" + super.retornarLegajo() + " es invalida.");
+		}
+		
 		this.categoria = categoria;
 	}
 	
@@ -18,14 +23,22 @@ public class Permanente extends Empleado {
 	}
 	
 	@Override
-	public double calcularCosto(double dias) {		
-	    double valorFinal = Math.round(dias) * super.retornarValor() * 1.02;
+	public double calcularCosto(double dias) {
+		if (dias <= 0) {			
+			throw new IllegalArgumentException("La cantidad de días ingresada es invalida.");
+		}
+		
+	    double valorFinal = dias * super.retornarValor() * 1.02;
 	    return valorFinal;
 	}
 	
 	@Override
-	public double calcularCostoConRetraso(double dias) {		
-	    double valorFinal = Math.round(dias) * super.retornarValor();
+	public double calcularCostoConRetraso(double dias) {
+		if (dias <= 0) {			
+			throw new IllegalArgumentException("La cantidad de días ingresada es invalida.");
+		}
+		
+	    double valorFinal = dias * super.retornarValor();
 	    return valorFinal;
 	}
 	

@@ -21,9 +21,9 @@ public class Cliente {
 //			throw new IllegalArgumentException("El email del cliente ingresado es invalido.");
 //		}
 		
-		if (datosCliente[2] == null || datosCliente[2].equals("")) {
-			throw new IllegalArgumentException("El teléfono del cliente ingresado es invalido.");
-		}
+//		if (datosCliente[2] == null || datosCliente[2].equals("")) {
+//			throw new IllegalArgumentException("El teléfono del cliente ingresado es invalido.");
+//		}
 		
 		this.nombre = datosCliente[0];
 		this.email = datosCliente[1];

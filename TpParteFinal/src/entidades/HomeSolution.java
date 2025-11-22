@@ -11,95 +11,53 @@ public class HomeSolution implements IHomeSolution {
 	HashMap<Integer, Proyecto> proyectos = new HashMap<>();
 
 	@Override
-	public void registrarEmpleado(String nombre, double valor) throws IllegalArgumentException {
-		if (nombre == null || nombre.equals("")) {			
-			throw new IllegalArgumentException("El nombre ingresado es invalido.");
-		}	
-		
-		if (valor <= 0) {			
-			throw new IllegalArgumentException("El valor ingresado es invalido.");
-		}
-		
+	public void registrarEmpleado(String nombre, double valor) throws IllegalArgumentException {		
 		Empleado e = new Contratado(nombre, valor);
 		empleados.put(e.retornarLegajo(), e);
 	}
 
 	@Override
-	public void registrarEmpleado(String nombre, double valor, String categoria) throws IllegalArgumentException {		
-		if (nombre == null || nombre.equals("")) {
-			throw new IllegalArgumentException("El nombre ingresado es invalido.");
-		}
-		
-		if (valor <= 0) {
-			throw new IllegalArgumentException("El valor ingresado es invalidos.");
-		}
-		
-		if (!categoriaEsValida(categoria)) {
-			throw new IllegalArgumentException("La categoria ingresada es invalida.");
-		}
-		
+	public void registrarEmpleado(String nombre, double valor, String categoria) throws IllegalArgumentException {				
 		Empleado e = new Permanente(nombre, valor, categoria);
 		empleados.put(e.retornarLegajo(), e);		
 	}
 
 	@Override
 	public void registrarProyecto(String[] titulos, String[] descripciones, double[] dias, String domicilio,
-			String[] datosCliente, String fechaInicio, String fechaEstimadaFin) throws IllegalArgumentException {
-		if (titulos.length != descripciones.length || descripciones.length != dias.length) {
-			throw new IllegalArgumentException("Deben ingresarse la misma cantidad de titulos, descripciones y días.");
-		}
-		
-		if (titulos.length <= 0) {
-			throw new IllegalArgumentException("Los títulos ingresados son invalidos.");
-		}
-		
-		if (descripciones.length <= 0) {
-			throw new IllegalArgumentException("Las descripciones ingresadas son invalidas.");
-		}
-		
-		if (dias.length <= 0) {
-			throw new IllegalArgumentException("Los días ingresados son invalidos.");
-		}
-		
-		if (domicilio == null ||domicilio.equals("")) {
-			throw new IllegalArgumentException("El domicilio ingresado es invalido.");
-		}
-		
-		if (datosCliente.length != 3) {
-			throw new IllegalArgumentException("Los datos del cliente ingresados son invalidos; Debe ingresar el nombre, email y telefono.");
-		}
-		
-		if (fechaInicio == null || fechaInicio.equals("")) {
-			throw new IllegalArgumentException("La fecha de inicio ingresada es invalida.");
-		}
-		
-		if (fechaEstimadaFin == null || fechaEstimadaFin.equals("")) {
-			throw new IllegalArgumentException("La fecha estimada de fin ingresada es invalida.");
-		}
-		
+			String[] datosCliente, String fechaInicio, String fechaEstimadaFin) throws IllegalArgumentException {					
 		Proyecto p = new Proyecto(titulos, descripciones, dias, domicilio, datosCliente, fechaInicio, fechaEstimadaFin);
 		proyectos.put(p.retornarNumeroProyecto(), p);
 	}
-
 	
 	public void asignarResponsableEnTarea(Integer numeroProyecto, String tituloTarea) throws Exception {				
 	    Proyecto proyecto = proyectos.get(numeroProyecto);
 	    if (proyecto == null || proyecto.retornarEstado() == Estado.finalizado) {
-	        throw new Exception("El proyecto no existe o está finalizado.");
+	        throw new IllegalArgumentException("El proyecto no existe o está finalizado.");
 	    }
 
 	    for (Empleado e: empleados.values()) {		
-	        if (e.retornarDisponibilidad()) {
-	            proyecto.asignarEmpleadoDisponibleATarea(tituloTarea, e);
-	            e.ocuparEmpleado();
+	        if (e.retornarDisponibilidad()) {	        	
+	        	//Asignamos al empleado.
+	            proyecto.asignarEmpleadoDisponibleATarea(tituloTarea, e.retornarLegajo());                  
+	            //Calculamos el costo del trabajo y lo añadimos a proyecto.
+	            double dias = proyecto.retornarDiasTarea(tituloTarea);
+	            
+	            if (e.retornarTipoContrato().equalsIgnoreCase("CONTRATADO")) {
+	            	double mediosDias = proyecto.retornarMediosDiasTarea(tituloTarea);
+	            	dias = dias - mediosDias + mediosDias/2;
+	            }
+	            
+	            double costo = e.calcularCosto(dias);
+	            proyecto.incrementarCosto(costo);            
+	            //Ocupamos al empleado.
+	            e.ocuparEmpleado();	            
 	            return;
 	        }
 	    }
 
 	    proyecto.establecerPendiente();
-	    throw new Exception("No hay suficientes empleados disponibles");
+	    throw new IllegalArgumentException("No hay suficientes empleados disponibles");
 	}
-
 
 	@Override
 	public void asignarResponsableMenosRetraso(Integer numero, String titulo) throws Exception {		
@@ -109,7 +67,7 @@ public class HomeSolution implements IHomeSolution {
 	        throw new Exception("El proyecto no existe o está finalizado.");
 	    }
 
-	    // Elegimos el empleado con menos retrasos
+	    //Elegimos el empleado con menos retrasos.
 	    Empleado mejorEmpleado = obtenerMenosRetrasos();
 
 	    if (mejorEmpleado == null) {
@@ -117,13 +75,21 @@ public class HomeSolution implements IHomeSolution {
 	        throw new Exception("No hay empleados disponibles.");
 	    }
 
-	    // nuevo método (bajo acoplamiento)
-	    proyecto.asignarEmpleadoDisponibleATarea(titulo, mejorEmpleado);
-
-	    // Ocupamos al empleado
+	    //Asignamos empleado.
+	    proyecto.asignarEmpleadoDisponibleATarea(titulo, mejorEmpleado.retornarLegajo());	    
+        //Calculamos el costo del trabajo y lo añadimos a proyecto.
+        double dias = proyecto.retornarDiasTarea(titulo);
+        
+        if (mejorEmpleado.retornarTipoContrato().equalsIgnoreCase("CONTRATADO")) {
+        	double mediosDias = proyecto.retornarMediosDiasTarea(titulo);
+        	dias = dias - mediosDias + mediosDias/2;
+        }
+        
+        double costo = mejorEmpleado.calcularCosto(dias);
+        proyecto.incrementarCosto(costo);
+	    //Ocupamos al empleado.
 	    mejorEmpleado.ocuparEmpleado();
 	}
-
 	
 	@Override
 	public void registrarRetrasoEnTarea(Integer numero, String titulo, double cantidadDias) throws IllegalArgumentException {        
@@ -131,43 +97,24 @@ public class HomeSolution implements IHomeSolution {
 	    if (proyecto == null) {
 	        throw new IllegalArgumentException("El proyecto no existe.");
 	    }
-	    
-	    if (cantidadDias <= 0) {
-	        throw new IllegalArgumentException("Los días ingresados deben ser mayores a 0.");
-	    }
-
-	    // Le pedimos al proyecto que registre el retraso y nos devuelva el legajo del empleado responsable
+	   
+	    //Le pedimos al proyecto que registre el retraso y nos devuelva el legajo del empleado responsable.
 	    Integer legajoEmpleado = proyecto.registrarRetrasoEnTarea(titulo, cantidadDias);
-
-	    
+	    //Le contabilizamos el retraso al empleado.
 	    Empleado empleado = empleados.get(legajoEmpleado);
 	    empleado.añadirRetraso();
+	    //Calculamos el costo del retraso y se lo añadimos al proyecto.
 	    double costoExtra = empleado.calcularCostoConRetraso(cantidadDias);
 	    proyecto.incrementarCosto(costoExtra);
 	}
-
 	
 	@Override
 	public void agregarTareaEnProyecto(Integer numero, String titulo, String descripcion, double dias)
 			throws IllegalArgumentException {	
-		if (!proyectos.containsKey(numero)) {
+		Proyecto p = proyectos.get(numero);
+		
+		if (p == null) {
 			throw new IllegalArgumentException("El proyecto no existe.");
-		}
-		
-		if (proyectos.get(numero).retornarEstado() == Estado.finalizado) {
-			throw new IllegalArgumentException("El proyecto esta finalizado.");
-		}
-		
-		if (titulo == null || titulo.equals("")) {
-			throw new IllegalArgumentException("El título ingresado es invalido.");
-		}
-		
-		if (descripcion == null || descripcion.equals("")) {
-			throw new IllegalArgumentException("La descripción ingresada es invalida.");
-		}
-		
-		if (dias <= 0) {
-			throw new IllegalArgumentException("Los días ingresados deben ser mayores a 0.");
 		}
 		
 		proyectos.get(numero).registrarTarea(titulo, descripcion, dias);
@@ -182,7 +129,7 @@ public class HomeSolution implements IHomeSolution {
 	    
 	    Integer empleadoTarea = proyecto.finalizarTarea(titulo);
 	    
-	    if (empleadoTarea != null) {
+	    if (empleadoTarea != null || empleadoTarea != 0) {
 	    	empleados.get(empleadoTarea).desocuparEmpleado();
 	    }
 	}
@@ -196,9 +143,9 @@ public class HomeSolution implements IHomeSolution {
 		
 		Set<Integer> empleadosADesocupar = proyecto.finalizarProyecto(fin);
 		
-		for (Integer i : empleadosADesocupar) {
-			if (i != null) {
-				empleados.get(i).desocuparEmpleado();
+		for (Integer legajos : empleadosADesocupar) {
+			if (legajos != null) {
+				empleados.get(legajos).desocuparEmpleado();
 			}
 		}
 	}
@@ -206,53 +153,141 @@ public class HomeSolution implements IHomeSolution {
 	@Override
 	public void reasignarEmpleadoEnProyecto(Integer numero, Integer legajoNuevo, String titulo) throws Exception {
 	    Proyecto proyecto = proyectos.get(numero);
-	    if (proyecto == null) 
+	    Empleado empleadoNuevo = empleados.get(legajoNuevo);
+	    if (proyecto == null) {
 	        throw new IllegalArgumentException("No existe el proyecto con número: " + numero);
-
-	    Empleado nuevoEmpleado = empleados.get(legajoNuevo);
-	    if (nuevoEmpleado == null) 
+	    }
+	    
+	    if (empleadoNuevo == null) {
 	        throw new IllegalArgumentException("El empleado reemplazante no existe: " + legajoNuevo);
-
-	    // Pedimos a Proyecto que haga todo y nos devuelva el ajuste de costo
-	    Empleado empleadoAnterior = empleados.get(proyecto.obtenerLegajoEmpleadoTarea(titulo));
-	    double ajusteCosto = proyecto.reasignarEmpleadoYCalcularCosto(titulo, nuevoEmpleado, empleadoAnterior);
-
-	    // Actualizamos disponibilidad
-	    if (empleadoAnterior != null) empleadoAnterior.desocuparEmpleado();
-	    nuevoEmpleado.ocuparEmpleado();
-
-	    // Ajustamos costo
-	    proyecto.incrementarCosto(ajusteCosto);
+	    }
+	    
+	    //Asignamos el empleado nuevo a la tarea y obtenemos al empleado anterior.    
+	    Integer legajoAnterior = proyecto.reasignarEmpleado(titulo, legajoNuevo);
+	    Empleado empleadoAnterior = empleados.get(legajoAnterior);	    
+	    //Actualizamos disponibilidades.
+	    empleadoAnterior.desocuparEmpleado();
+	    empleadoNuevo.ocuparEmpleado();
+	    //calculamos costo del empleado nuevo
+	    double diasTarea = proyecto.retornarDiasTarea(titulo);
+	    
+        if (empleadoNuevo.retornarTipoContrato().equalsIgnoreCase("CONTRATADO")) {
+        	double mediosDias = proyecto.retornarMediosDiasTarea(titulo);
+        	diasTarea = diasTarea - mediosDias + mediosDias/2;
+        }
+        
+        else {      	
+        	diasTarea = proyecto.retornarDiasTarea(titulo);
+        }
+        
+	    double costoNuevo = empleadoNuevo.calcularCosto(diasTarea);
+	    //calculamos costo del empleado anterior
+	    double costoAnterior;
+        
+	    //comprobamos si había retraso en la tarea y calculamos costo del empleado anterior en consecuencia.
+	    if (proyecto.tareaConRetraso(titulo)) {
+	    	//Calculamos costo del empleado anterior con retraso.	    	
+            if (empleadoAnterior.retornarTipoContrato().equalsIgnoreCase("CONTRATADO")) {
+            	double mediosDias = proyecto.retornarMediosDiasTarea(titulo);
+            	diasTarea = diasTarea - mediosDias + mediosDias/2;
+            }
+            
+            else {          	
+            	diasTarea = proyecto.retornarDiasTarea(titulo);
+            }
+            
+	    	costoAnterior = empleadoAnterior.calcularCostoConRetraso(diasTarea);
+	    }
+	    
+	    else {
+	    	//Calculamos costo del empleado anterior sin retraso.
+            if (empleadoAnterior.retornarTipoContrato().equalsIgnoreCase("CONTRATADO")) {
+            	double mediosDias = proyecto.retornarMediosDiasTarea(titulo);
+            	diasTarea = diasTarea - mediosDias + mediosDias/2;
+            }
+            
+            else {      	
+            	diasTarea = proyecto.retornarDiasTarea(titulo);
+            }
+            
+	    	costoAnterior = empleadoAnterior.calcularCosto(diasTarea);
+	    }
+	   
+	    //Reducimos el costo antiguo y incrementamos el nuevo.
+	    proyecto.reducirCosto(costoAnterior);
+	    proyecto.incrementarCosto(costoNuevo);
 	}
 
 	@Override
 	public void reasignarEmpleadoConMenosRetraso(Integer numero, String titulo) throws Exception {        
-	    Proyecto proyecto = proyectos.get(numero);
+	    Proyecto proyecto = proyectos.get(numero);    
+	    Empleado empleadoNuevo = obtenerMenosRetrasos();
+	    
 	    if (proyecto == null) {
 	        throw new IllegalArgumentException("No existe el proyecto con número: " + numero);
 	    }
-
-	    // Obtenemos el empleado con menos retrasos
-	    Empleado mejorEmpleado = obtenerMenosRetrasos();
-	    if (mejorEmpleado == null) {
-	        throw new Exception("No hay empleados disponibles para reasignar.");
+	    
+	    if (empleadoNuevo == null) {
+	        throw new IllegalArgumentException("No hay empleados disponibles para reasignar,");
 	    }
-
-	    // Delegamos a Proyecto la reasignación y nos devuelve el legajo del empleado anterior
-	    Integer legajoAnterior = proyecto.reasignarEmpleadoConMenosRetraso(titulo, mejorEmpleado);
-
-	    // Solo HomeSolution se encarga de actualizar el estado de los empleados
-	    if (legajoAnterior != null) {
-	        Empleado empleadoAnterior = empleados.get(legajoAnterior);
-	        if (empleadoAnterior != null) {
-	            empleadoAnterior.desocuparEmpleado();
+	    
+	    //Asignamos el empleado nuevo a la tarea y obtenemos al empleado anterior.    
+	    Integer legajoAnterior = proyecto.reasignarEmpleado(titulo, empleadoNuevo.retornarLegajo());
+	    Empleado empleadoAnterior = empleados.get(legajoAnterior);	    
+	    //Actualizamos disponibilidades.
+	    empleadoAnterior.desocuparEmpleado();
+	    empleadoNuevo.ocuparEmpleado();
+	    //Obtenemos los dias trabajados de la tarea.
+	    double diasTarea = proyecto.retornarDiasTarea(titulo);
+	    //calculamos costo del empleado nuevo
+	    
+        if (empleadoNuevo.retornarTipoContrato().equalsIgnoreCase("CONTRATADO")) {
+        	double mediosDias = proyecto.retornarMediosDiasTarea(titulo);
+        	diasTarea = diasTarea - mediosDias + mediosDias/2;
+        }
+        
+        else {          	
+        	diasTarea = proyecto.retornarDiasTarea(titulo);
+        }
+        
+	    double costoNuevo = empleadoNuevo.calcularCosto(diasTarea);
+	    //calculamos costo del empleado anterior
+	    double costoAnterior;
+	    
+	    //comprobamos si había retraso en la tarea y calculamos costo del empleado anterior en consecuencia.
+	    if (proyecto.tareaConRetraso(titulo)) {
+	    	//Calculamos costo del empleado anterior con retraso.
+	        if (empleadoAnterior.retornarTipoContrato().equalsIgnoreCase("CONTRATADO")) {
+	        	double mediosDias = proyecto.retornarMediosDiasTarea(titulo);
+	        	diasTarea = diasTarea - mediosDias + mediosDias/2;
 	        }
+	        
+	        else {          	
+	        	diasTarea = proyecto.retornarDiasTarea(titulo);
+	        }
+	        
+	    	costoAnterior = empleadoAnterior.calcularCostoConRetraso(diasTarea);
 	    }
-	    mejorEmpleado.ocuparEmpleado();
+	    
+	    else {
+	    	//Calculamos costo del empleado anterior sin retraso.
+	        if (empleadoAnterior.retornarTipoContrato().equalsIgnoreCase("CONTRATADO")) {
+	        	double mediosDias = proyecto.retornarMediosDiasTarea(titulo);
+	        	diasTarea = diasTarea - mediosDias + mediosDias/2;
+	        }
+	        
+	        else {          	
+	        	diasTarea = proyecto.retornarDiasTarea(titulo);
+	        }
+	        
+	    	costoAnterior = empleadoAnterior.calcularCosto(diasTarea);
+	    }
+	   
+	    //Reducimos el costo antiguo y incrementamos el nuevo.
+	    proyecto.reducirCosto(costoAnterior);
+	    proyecto.incrementarCosto(costoNuevo);
 	}
 	
-	
-
 	@Override
 	public double costoProyecto(Integer numeroProyecto) {
 		
@@ -462,14 +497,4 @@ public class HomeSolution implements IHomeSolution {
 		
 		return empleadoMenosRetrasos;	
 	}
-	
-	private boolean categoriaEsValida(String categoria) {
-		if (categoria == null || categoria.equals("")) {
-			return false;
-		}
-		
-		categoria = categoria.toUpperCase();
-		return categoria.equals("INICIAL") || categoria.equals("TECNICO") || categoria.equals("EXPERTO");
-	}
-	
 }

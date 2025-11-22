@@ -16,12 +16,12 @@ public class Contratado extends Empleado {
 	}
 	
 	@Override
-	public double calcularCosto(double dias) {
-	    return dias * 8 * super.retornarValor();
+	public double calcularCosto(double jornadas) {
+	    return jornadas * 8 * super.retornarValor();
 	}
 	
-	public double calcularCostoConRetraso(double dias) {
-	    return dias * 8 * super.retornarValor();
+	public double calcularCostoConRetraso(double jornadas) {
+	    return jornadas * 8 * super.retornarValor();
 	}
 	
 	

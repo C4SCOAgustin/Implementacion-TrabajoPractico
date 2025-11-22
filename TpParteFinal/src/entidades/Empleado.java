@@ -12,7 +12,19 @@ public abstract class Empleado {
 	
 	//MÉTODOS-OPERACIONES	
 	//Constructor.
-	public Empleado(String nombre, double valor, String tipoContrato) {	
+	public Empleado(String nombre, double valor, String tipoContrato) {
+		if (nombre == null || nombre.equals("")) {			
+			throw new IllegalArgumentException("El nombre ingresado es invalido.");
+		}	
+		
+		if (valor <= 0) {			
+			throw new IllegalArgumentException("El valor ingresado es invalido.");
+		}
+		
+		if (!(tipoContrato.equalsIgnoreCase("CONTRATADO") || tipoContrato.equalsIgnoreCase("PERMANENTE"))) {			
+			throw new IllegalArgumentException("El tipo de contrato del empleado es invalido.");
+		}
+		
 		this.nombre = nombre;
 		this.valor = valor;
 		this.tipoContrato = tipoContrato;
@@ -32,21 +44,33 @@ public abstract class Empleado {
 	public abstract double calcularCostoConRetraso(double dias);
 	
 	//Ocupa al empleado.
-	public void ocuparEmpleado() {		
+	public void ocuparEmpleado() {
+		if (!estaDisponible) {
+			throw new IllegalArgumentException("El empleado " + numeroLegajo + " ya esta ocupado");
+		}
+		
 		estaDisponible = false;
 	}
 	
 	//Desocupa al empleado.
-	public void desocuparEmpleado() {	
+	public void desocuparEmpleado() {
+		if (estaDisponible) {
+			throw new IllegalArgumentException("El empleado " + numeroLegajo + " ya esta desocupado");
+		}
+		
 		estaDisponible = true;
 	}	
 	//añade 1 retraso al contador de retrasos del empleado (void).
-	public void añadirRetraso() {		
+	public void añadirRetraso() {
+		if (retrasos < 0) {
+			throw new IllegalArgumentException("El empleado " + numeroLegajo + " tiene una cantidad de retrasos invalidos");
+		}
+		
 		retrasos ++;
 	}
 	
 	//Retorna el nombre del empleado como una cadena (String).
-	public String retornarNombre() {		
+	public String retornarNombre() {	
 		return nombre;
 	}
 	

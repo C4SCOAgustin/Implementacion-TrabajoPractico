@@ -25,11 +25,11 @@ public class Proyecto {
 			throw new IllegalArgumentException("El domicilio no puede ser vacio");
 		}
 		
-		if (fechaInicio == null ) {
+		if (fechaInicio == null || fechaInicio.equals("")) {
 			throw new IllegalArgumentException("La fecha de inicio no puede ser vacia");
 		}
 		
-		if (fechaEstimadaFin == null ) {
+		if (fechaEstimadaFin == null || fechaInicio.equals("")) {
 			throw new IllegalArgumentException("La fecha estimada de fin no puede ser vacia");
 		}
 		
@@ -46,27 +46,31 @@ public class Proyecto {
 		numeroProyecto = ultimoNumeroProyecto;	
 	}
 	
-	public void asignarEmpleadoDisponibleATarea(String tituloTarea, Empleado empleado) throws Exception {
-	    Tarea tarea = retornarTareaPorTitulo(tituloTarea);
-	    if (tarea == null) {
+	public void asignarEmpleadoDisponibleATarea(String tituloTarea, Integer legajoEmpleado) throws Exception {
+		if (estado.equals(Estado.finalizado)) {
+			throw new IllegalArgumentException("El proyecto " + numeroProyecto + "está finalizado.");
+		}
+		
+	    Tarea t = tareas.get(tituloTarea);
+	    if (t == null) {
 	        throw new IllegalArgumentException("No existe la tarea con título: " + tituloTarea);
 	    }
 
-	    if (tarea.retornarFinalizada()) {
-	        throw new Exception("La tarea está finalizada.");
-	    }
-
-	    if (tarea.retornarEmpleadoResponsable() != null) {
+	    if (t.retornarEmpleadoResponsable() != null) {
 	        throw new Exception("La tarea ya tiene un empleado asignado.");
 	    }
 
 	    //Asignación
-	    tarea.asignarEmpleado(empleado.retornarLegajo());
-
-	    //Ajuste de costo del proyecto
-	    double diasNecesarios = tarea.retornarDiasNecesarios();
-	    double costoTarea = empleado.calcularCosto(diasNecesarios);
-	    incrementarCosto(costoTarea);
+	    t.asignarEmpleado(legajoEmpleado);
+	    
+	    //Comprobacion sobre sobrepasar los dias en fechaEstimadaFin.
+	    Long diasTarea = Math.round(t.retornarDiasNecesarios());
+	    
+	    if (t.retornarDiaInicioActividad() != null) {
+		    if (t.retornarDiaInicioActividad().plusDays(diasTarea).isAfter(fechaEstimadaFin)) {
+		    	fechaEstimadaFin = t.retornarDiaInicioActividad().now().plusDays(diasTarea);    	
+		    }
+	    }
 
 	    // Si el proyecto estaba pendiente, lo activamos
 	    if (Estado.pendiente.equals(this.estado)) {
@@ -75,91 +79,50 @@ public class Proyecto {
 	}
 	
 	public Integer registrarRetrasoEnTarea(String tituloTarea, double cantidadDias) {
-	    Tarea tarea = retornarTareaPorTitulo(tituloTarea);
-	    if (tarea == null) {
+		Tarea t = tareas.get(tituloTarea);
+		
+	    if (t == null) {
 	        throw new IllegalArgumentException("No existe la tarea con título: " + tituloTarea);
 	    }
 
-	    // Devuelve el legajo del empleado responsable
-	    Integer legajoResponsable = tarea.retornarEmpleadoResponsable();
-	    tarea.registrarRetraso(cantidadDias);
+	    //Devuelve el legajo del empleado responsable
+	    Integer legajoResponsable = t.retornarEmpleadoResponsable();	    
+	    //Añadimos retraso a tarea
+	    t.registrarRetraso(cantidadDias);	    
+	    //Comprobacion sobre sobrepasar los dias en fechaEstimadaFin.
+	    Long diasTarea = Math.round(t.retornarDiasNecesarios());
+	    
+	    if (t.retornarDiaInicioActividad() != null) {
+		    if (t.retornarDiaInicioActividad().plusDays(diasTarea).isAfter(fechaEstimadaFin)) {
+		    	fechaEstimadaFin = t.retornarDiaInicioActividad().now().plusDays(diasTarea);    	
+		    }
+	    }
+	    
+	    retraso = true;
 	    return legajoResponsable;
 	}
 	
-	
 	// Devuelve cuánto ajustar el costo al reasignar un empleado
-	public double reasignarEmpleadoYCalcularCosto(String tituloTarea, Empleado nuevoEmpleado, Empleado empleadoAnterior) throws Exception {
-	    Tarea tarea = retornarTareaPorTitulo(tituloTarea); // Proyecto sí conoce Tarea
-	    if (tarea == null) 
-	        throw new IllegalArgumentException("No existe la tarea con título: " + tituloTarea);
-
-	    Integer legajoAnterior = tarea.retornarEmpleadoResponsable();
-	    if (legajoAnterior == null)
-	        throw new Exception("La tarea no tiene empleado asignado previamente.");
-
-	    tarea.asignarEmpleado(nuevoEmpleado.retornarLegajo());
-
-	    double diasTotales = tarea.retornarDiasNecesarios();
-	    double costoAnterior = 0;
-	    if (empleadoAnterior != null) {
-	        if (tarea.retornarDiasRetraso() > 0)
-	            costoAnterior = empleadoAnterior.calcularCostoConRetraso(diasTotales);
-	        else
-	            costoAnterior = empleadoAnterior.calcularCosto(diasTotales);
-	    }
-
-	    double costoNuevo;
-	    if (tarea.retornarDiasRetraso() > 0)
-	        costoNuevo = nuevoEmpleado.calcularCostoConRetraso(diasTotales);
-	    else
-	        costoNuevo = nuevoEmpleado.calcularCosto(diasTotales);
-
-	    return costoNuevo - costoAnterior;
-	}
-	
-	
-	public Integer reasignarEmpleadoConMenosRetraso(String tituloTarea, Empleado nuevoEmpleado) throws Exception {
-	    // Obtengo la tarea
-	    Tarea tarea = retornarTareaPorTitulo(tituloTarea);
+	public Integer reasignarEmpleado(String tituloTarea, Integer nuevoEmpleado) throws Exception {
+		if (estado.equals(Estado.finalizado)) {
+			throw new IllegalArgumentException("El proyecto " + numeroProyecto + "está finalizado.");
+		}
+		
+		Tarea tarea  = tareas.get(tituloTarea);
+		
 	    if (tarea == null) {
 	        throw new IllegalArgumentException("No existe la tarea con título: " + tituloTarea);
 	    }
-
-	    // Obtengo el legajo del empleado actualmente asignado
-	    Integer legajoAnterior = tarea.retornarEmpleadoResponsable();
-	    if (legajoAnterior == null) {
-	        throw new Exception("La tarea no tiene un empleado asignado actualmente.");
-	    }
-
-	    // Asigno el nuevo empleado
-	    tarea.asignarEmpleado(nuevoEmpleado.retornarLegajo());
-
-	    // calculo costo 
-	    double diasTotales = tarea.retornarDiasNecesarios();
-	    double costoNuevo = tarea.retornarDiasRetraso() > 0 ?
-	                        nuevoEmpleado.calcularCostoConRetraso(diasTotales) :
-	                        nuevoEmpleado.calcularCosto(diasTotales);
-
-	    incrementarCosto(costoNuevo);
-
-	    // Devuelvo el legajo anterior para que HomeSolution lo desocupe
-	    return legajoAnterior;
-	}
-	
-	
-
-	
-	// Devuelve el legajo del empleado asignado a la tarea, o null si no hay ninguno
-	public Integer obtenerLegajoEmpleadoTarea(String tituloTarea) {
-	    Tarea tarea = retornarTareaPorTitulo(tituloTarea); // Proyecto sí conoce Tarea
-	    if (tarea == null) {
-	        throw new IllegalArgumentException("No existe la tarea con título: " + tituloTarea);
-	    }
-	    return tarea.retornarEmpleadoResponsable();
+	    
+	    return tarea.reasignarEmpleado(nuevoEmpleado);    
 	}
 	
 	public void registrarTarea(String tituloTarea, String descripcionTarea,
-			double diasNecesariosTarea) {	
+			double diasNecesariosTarea) {		
+		if (estado.equals(Estado.finalizado)) {
+			throw new IllegalArgumentException("El proyecto " + numeroProyecto + "está finalizado.");
+		}
+		
 		if (tituloTarea == null || tituloTarea.equals("")) {
 			throw new IllegalArgumentException("El título ingresado es invalido.");
 		}
@@ -174,20 +137,28 @@ public class Proyecto {
 		
 		Tarea t = new Tarea(tituloTarea, descripcionTarea, diasNecesariosTarea);
 		tareas.put(t.retornarTitulo(), t);
-		
-//		if (LocalDate.now().plusDays(Math.round(diasNecesariosTarea)).compareTo(fechaEstimadaFin) > 0) {
-//			fechaEstimadaFin.plusDays(LocalDate.now().plusDays(Math.round(diasNecesariosTarea)).compareTo(fechaEstimadaFin));
-//		}
 	}
 	
-	public void registrarTareas(String[] tituloTarea, String[] descripcionTarea,
+	public void registrarTareas(String[] titulosTarea, String[] descripcionesTarea,
 			double[] diasNecesariosTarea) {
-		for (int i = 0; i < tituloTarea.length; i++) {
-			registrarTarea(tituloTarea[i], descripcionTarea[i], diasNecesariosTarea[i]);
+		
+		if (estado.equals(Estado.finalizado)) {
+			throw new IllegalArgumentException("El proyecto " + numeroProyecto + "está finalizado.");
+		}
+		
+		if (titulosTarea.length != descripcionesTarea.length || descripcionesTarea.length != diasNecesariosTarea.length) {
+			throw new IllegalArgumentException("Deben ingresarse la misma cantidad de titulos, descripciones y días para la creación de tareas.");
+		}
+		
+		for (int i = 0; i < titulosTarea.length; i++) {
+			registrarTarea(titulosTarea[i], descripcionesTarea[i], diasNecesariosTarea[i]);
 		}
 	}
 	
 	public Integer finalizarTarea(String tituloTarea) {
+		if (estado.equals(Estado.finalizado)) {
+			throw new IllegalArgumentException("El proyecto " + numeroProyecto + "está finalizado.");
+		}
 		
 		if (tituloTarea == null || tituloTarea.equals("")) {
 	        throw new IllegalArgumentException("El título ingresado no puede ser nulo.");
@@ -200,12 +171,13 @@ public class Proyecto {
 	    return tareas.get(tituloTarea).finalizarTarea();	    
 	}
 		
-	public Set<Integer> finalizarProyecto(String fechaFin) {		
-		Set<Tarea> pendientes = retornarTareasPendientes();
-		Set<Integer> empleadosADesocupar = new HashSet<>();
+	public Set<Integer> finalizarProyecto(String fechaFin) {
+		if (estado.equals(Estado.finalizado)) {
+			throw new IllegalArgumentException("El proyecto " + numeroProyecto + "está finalizado.");
+		}
 		
 		if (fechaRealFin != null) {    	
-			throw new IllegalArgumentException("Proyecto ya finalizado");
+			throw new IllegalArgumentException("Proyecto ya finalizado.");
 		}
 		    
 		if (fechaFin == null || fechaFin.length() != 10) {	    	
@@ -216,6 +188,13 @@ public class Proyecto {
 	        throw new IllegalArgumentException("La fecha de fin debe ser posterior a la fecha de inicio.");
 	    }
 		
+//		if (!fechaEstimadaFin.isEqual(LocalDate.parse(fechaFin))) {   	
+//	        throw new IllegalArgumentException("La fecha de fin no coincide con la fecha estimada de fin");
+//	    }
+//		
+		Set<Tarea> pendientes = retornarTareasPendientes();
+		Set<Integer> empleadosADesocupar = new HashSet<>();
+		
 		if (!pendientes.isEmpty()) {
 			for (Tarea t : pendientes) {
 				empleadosADesocupar.add(finalizarTarea(t.retornarTitulo()));
@@ -223,16 +202,11 @@ public class Proyecto {
 		}
 		
 		estado  = Estado.finalizado;
-		fechaRealFin = LocalDate.parse(fechaFin);
-		
-		if (fechaRealFin.isAfter(fechaEstimadaFin)) {
-			retraso = true;
-		}
-		
+		fechaRealFin = LocalDate.parse(fechaFin);	
 		return empleadosADesocupar;
 	}
 
-	public double calcularCostoProyecto() {		
+	public double calcularCostoProyecto() {
 		if(retraso) {				 
 			 return costoFinal * 1.25;
 		}
@@ -245,11 +219,19 @@ public class Proyecto {
 	    return tareas;
 	}
 	
-	public void incrementarCosto(double monto) {	
+	public void incrementarCosto(double monto) {
+		if (estado.equals(Estado.finalizado)) {
+			throw new IllegalArgumentException("El proyecto " + numeroProyecto + "está finalizado.");
+		}
+		
         this.costoFinal += monto;
     }
 	
-	 public void reducirCosto(double monto) {	 
+	 public void reducirCosto(double monto) {
+			if (estado.equals(Estado.finalizado)) {
+				throw new IllegalArgumentException("El proyecto " + numeroProyecto + "está finalizado.");
+			}
+			
 	        if (monto < 0) {
 	            throw new IllegalArgumentException("El monto a reducir no puede ser negativo.");
 	        }
@@ -260,10 +242,6 @@ public class Proyecto {
 	            costoFinal = 0;
 	        }
 	    }
-	 
-	 public Tarea retornarTareaPorTitulo(String titulo) {		 
-		    return tareas.get(titulo);
-		}
 
 		public String retornarDomicilio() {		
 		    return domicilio;
@@ -346,6 +324,34 @@ public class Proyecto {
 		}
 		
 		return cadena.toString();
+	}
+	
+	public double retornarDiasTarea(String tituloTarea) {
+		Tarea t = tareas.get(tituloTarea);
+		if (t == null) {
+			throw new IllegalArgumentException("No existe tarea con titulo " + tituloTarea + ".");
+		}
+		
+		return t.retornarDiasNecesarios();
+	}
+	
+	public double retornarMediosDiasTarea(String tituloTarea) {
+		Tarea t = tareas.get(tituloTarea);
+		if (t == null) {
+			throw new IllegalArgumentException("No existe tarea con titulo " + tituloTarea + ".");
+		}
+		
+		return t.retornarMediosDiasNecesarios();
+	}
+	
+	public boolean tareaConRetraso(String tituloTarea) {
+		Tarea t = tareas.get(tituloTarea);
+		
+		if (t == null) {
+			throw new IllegalArgumentException("La tarea " + tituloTarea + " no existe.");
+		}
+		
+		return t.retornarDiasRetraso() > 0;
 	}
 	
 }
